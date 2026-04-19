@@ -1,0 +1,99 @@
+﻿@using ExchangeRateProvider.Admin.Models.Currencies
+
+@model GetCurrencyListModel
+@{
+    ViewData["Title"] = "Currencies";
+    Layout = "_Layout";
+}
+
+<h1>@ViewData["Title"] List</h1>
+
+<form method="get" asp-action="List" class="mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-2">
+            <strong for="Name">Name:</strong>
+            <input name="Name" value="@Model.Name" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <strong for="Code">Code:</strong>
+            <input name="Code" value="@Model.Code" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <strong for="Type">Type:</strong>
+            @Html.DropDownList("Type", Model.CurrencyTypesOptions, new { @class = "form-select" })
+        </div>
+        <div class="col-md-2">
+            <strong for="Published">Published:</strong>
+            @Html.DropDownList("Published", Model.PublishOptions, new { @class = "form-select" })
+        </div>
+        <div class="col-md-2 mt-4">
+            <button type="submit" class="btn btn-success">Search</button>
+            <a asp-controller="Currency" asp-action="Add" class="btn btn-info">Create</a>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+    <form asp-action="List" method="get" id="pageSizeForm">
+        <div class="input-group">
+            <span class="input-group-text">Items per page:</span>
+            @Html.DropDownList("size", Model.SizeOptions, new { @class = "form-select", onchange = "this.form.submit();" })
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Code</th>
+                <th>Decimal Precision</th>
+                <th>Published</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var currency in Model.PaginationResponse.Items)
+            {
+                <tr>
+                    <td>@currency.Name</td>
+                    <td>@EnumHelper.GetEnumDisplayName(currency.Type)</td>
+                    <td>@currency.Code</td>
+                    <td>@currency.DecimalPrecision</td>
+                    <td>@(currency.Published ? "✅" : "❌")</td>
+                    <td>
+                        <a asp-controller="Currency" asp-action="Edit" asp-route-id="@currency.Id" class="nav-link active">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Currency Pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        @{
+            var totalPages = Model.PaginationResponse.Base.Total;
+            var currentPage = Model.PaginationResponse.Base.Index;
+        }
+
+        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+            <a class="page-link" asp-route-index="@(currentPage - 1)" asp-route-size="@Model.PaginationResponse.Base.Size">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-route-index="@i" asp-route-size="@Model.PaginationResponse.Base.Size">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+            <a class="page-link" asp-route-index="@(currentPage + 1)" asp-route-size="@Model.PaginationResponse.Base.Size">Next</a>
+        </li>
+    </ul>
+</nav>

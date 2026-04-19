@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NT.DDD.Repository" Version="1.0.4" />
+		<PackageReference Include="NT.IDP.BaseIdentityServer" Version="1.0.4-rc01" />
+		<PackageReference Include="NT.DDD.Infrastructure" Version="1.0.4" />
+		<PackageReference Include="NT.Logs" Version="1.0.0-rc07" />
+		<PackageReference Include="NT.Caching.Redis" Version="1.0.0-rc10" />
+		<PackageReference Include="NT.MassTransit" Version="1.0.0-rc01"  />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\1.Domain\ExchangeRateProvider.Contract\ExchangeRateProvider.Contract.csproj" />
+		<ProjectReference Include="..\..\Adapters\CryptoCompare\ExchangeRateProvider.Adapter.CryptoCompare.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Migrations\Configuration\" />
+		<Folder Include="Migrations\ExchangeRateProvider\" />
+		<Folder Include="Migrations\PersistedGrant\" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,45 @@
+﻿@using ExchangeRateProvider.Admin.Models.Markets
+@model ResponseWrapper<CreateMarketModel>
+@{
+    ViewData["Title"] = "Markets";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Create Market</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Market" asp-action="Add" method="post">
+                <div class="col" style=" align-items: center;">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.MarketCurrencyId" class="form-label">Market Currency:</label>
+                        @Html.DropDownList("Response.MarketCurrencyId", Model.Response.MarketCurrencyIdsOptions, new { @class = "form-control", @placeholder = "Select Type" })
+                    </div>
+                    <div class="col-md-3 form-check">
+                        <input asp-for="Response.IsDefault" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.IsDefault" class="form-check-label">IsDefault</label>
+                    </div>
+                    <div class="col-md-3 form-check">
+                        <input asp-for="Response.CreateAllFiats" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.CreateAllFiats" class="form-check-label">Create All Fiat Pairs</label>
+                    </div>
+                    <div class="col-md-3 form-check">
+                        <input asp-for="Response.CreateAllCryptos" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.CreateAllCryptos" class="form-check-label">Create All Crypto Pairs</label>
+                    </div>
+                </div>
+                <div class="form-btn mt-4">
+                    <a type="submit" href="@Url.Action("List", "Market")" value="Cancel" class="btn btn-danger">Cancel</a>
+                    <button type="submit" class="btn btn-success">Create & Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>

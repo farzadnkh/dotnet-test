@@ -1,0 +1,63 @@
+﻿@using ExchangeRateProvider.Admin.Models.ManualRatings
+@model ManualRatingListModel
+@{
+    ViewData["Title"] = "ManualRating";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <form asp-controller="ManualRating" asp-action="Save" method="post" id="ratingForm">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        @for (int i = 0; i < Model.ManualRatingResponses.Count; i++)
+        {
+            @Html.HiddenFor(x => x.ManualRatingResponses[i].UpperLimitPercentage)
+            @Html.HiddenFor(x => x.ManualRatingResponses[i].LowerLimitPercentage)
+            var cur = Model.ManualRatingResponses[i];
+            <div class="card">
+                <div class="card-header">
+                    <h5>@cur.TradingPair</h5>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="@Model.ManualRatingResponses[i].Price">Price</label>
+                        <input asp-for="@Model.ManualRatingResponses[i].Price" class="form-control" />
+                        <span asp-validation-for="@Model.ManualRatingResponses[i].Price" class="validation-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.ManualRatingResponses[i].UpperLimit">Ask</label>
+                        <input asp-for="@Model.ManualRatingResponses[i].UpperLimit" class="form-control" disabled />
+                        <span asp-validation-for="@Model.ManualRatingResponses[i].UpperLimit" class="validation-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.ManualRatingResponses[i].LowerLimit">Bid</label>
+                        <input asp-for="@Model.ManualRatingResponses[i].LowerLimit" class="form-control" disabled />
+                        <span asp-validation-for="@Model.ManualRatingResponses[i].LowerLimit" class="validation-error"></span>
+                    </div>
+                    <div class="button-container">
+                        <button type="button"
+                                class="save-row-btn"
+                                data-trading-pair="@cur.TradingPair"
+                                data-trading-pair-id="@cur.TradingPairId"
+                                data-index="@i">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </form>
+</div>
+
+<divc class="loader-overlay" id="loaderOverlay">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</divc>
+
+<link rel="stylesheet" href="~/css/manualrating.css" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/manualrating.js"></script>

@@ -1,0 +1,68 @@
+﻿@model CreateConsumerModel
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0 py-2">Edit Consumer</h5> 
+        </div>
+        <div class="card-body">
+            <form id="editConsumerForm" asp-controller="Consumer" asp-action="Edit" method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control" placeholder="Jack"/>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control" placeholder="Daniels"/>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Daniels"/>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProjectName" class="form-label">Project Name</label>
+                        <input asp-for="ProjectName" class="form-control" placeholder="jack.daniels@example.com"/>
+                        <span asp-validation-for="ProjectName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="UserName" class="form-label">User Name</label>
+                        <input asp-for="UserName" class="form-control" placeholder="JackDaniels"/>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    @* *@
+                    @* <div class="col-md-6"> *@
+                    @*     <label asp-for="ProjectName" class="form-label">Project Name</label> *@
+                    @*     <input asp-for="ProjectName" class="form-control" placeholder="ProjectName"/> *@
+                    @*     <span asp-validation-for="ProjectName" class="text-danger"></span> *@
+                    @* </div> *@
+                    <div class="col-md-6">
+                        <label asp-for="ApiKey" class="form-label">API Key</label>
+                        <input asp-for="ApiKey" class="form-control" disabled/>
+                        <span asp-validation-for="ApiKey" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end mb-1">
+                        <div class="form-check">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveConsumerCheck"/>
+                            <label asp-for="IsActive" class="form-check-label" for="isActiveConsumerCheck">Is Active</label>
+                        </div>
+                        <span asp-validation-for="IsActive" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a type="button" href="@Url.Action("List", "Consumer")"  value="Cancel" class="btn btn-danger me-2" id="consumerCancelBtn">Cancel</a>
+                    <button type="submit" name="actionType" value="EditBack" class="btn btn-success" id="consumerEditBtn">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<partial name="_ValidationScriptsPartial" />
+

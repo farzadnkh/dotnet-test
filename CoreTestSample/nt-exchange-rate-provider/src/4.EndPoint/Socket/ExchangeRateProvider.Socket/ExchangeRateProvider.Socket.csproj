@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\1.Core\ExchangeRateProvider.Contract\ExchangeRateProvider.Contract.csproj" />
+      <ProjectReference Include="..\..\..\2.Application\ExchangeRateProvider.Application\ExchangeRateProvider.Application.csproj" />
+      <ProjectReference Include="..\..\..\3.Infrastructure\ExchangeRateProvider.Infrastructure.Sql\ExchangeRateProvider.Infrastructure.Sql.csproj" />
+      <ProjectReference Include="..\..\..\Adapters\CryptoCompare\CryptoCompare.csproj" />
+    </ItemGroup>
+
+</Project>

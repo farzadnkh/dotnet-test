@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>NT.SDK.ExchangeRateProvider</PackageId>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<Product>NT SDK ExchangeRateProvider</Product>
+		<AssemblyName>NT.SDK.ExchangeRateProvider</AssemblyName>
+		<Title>NT SDK ExchangeRateProvider</Title>
+		<PackageTags>net,netcore,gateway,sdk</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NT.HashiCorp.Vault.Abstraction" Version="1.3.1-rc04" />
+		<PackageReference Include="NT.BootstrapLogger" Version="1.0.0-rc01" />
+		<PackageReference Include="Websocket.Client" Version="5.2.0" />
+		<PackageReference Include="NT.SDK.RestClient" Version="1.0.0" />
+		<PackageReference Include="NT.Caching.Redis" Version="1.0.0-rc10" />
+	</ItemGroup>
+</Project>

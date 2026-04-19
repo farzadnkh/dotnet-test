@@ -1,0 +1,157 @@
+﻿@using ExchangeRateProvider.Admin.Models.ConsumerConfiguration
+
+@model CreateConsumerConfigurationModel
+
+<div class="container-fluid mt-4">
+	<form id="consumerConfigForm" asp-controller="ConsumerConfiguration" asp-action="Add" method="post">
+		<div class="card shadow-sm mb-4">
+			<div class="card-header bg-light border-bottom">
+				<h5 class="mb-0 py-2">Add Consumer Configuration</h5>
+			</div>
+			<div class="card-body">
+				<div class="row g-3">
+					<div class="col-md-4">
+						<label asp-for="ProviderIds" class="form-label">Exchange Rate Providers</label>
+						<select asp-for="ProviderIds"
+								asp-items="Model.ProviderOptions"
+								class="form-select"
+								multiple="multiple"
+								id="providerSelect">
+						</select>
+						<span asp-validation-for="ProviderIds" class="text-danger"></span>
+					</div>
+
+					<div class="col-md-3">
+						<label asp-for="MarketIds" class="form-label">Market</label>
+						<select asp-for="MarketIds"
+								asp-items="Model.MarketOptions"
+								class="form-select"
+								multiple="multiple"
+								id="marketSelect">
+						</select>
+						<span asp-validation-for="MarketIds" class="text-danger"></span>
+					</div>
+					<div class="col-md-3">
+						<label asp-for="PairIds" class="form-label">Pair</label>
+						<select asp-for="PairIds"
+								asp-items="Model.PairOptions"
+								class="form-select"
+								multiple="multiple"
+								id="pairSelect">
+						</select>
+						<span asp-validation-for="PairIds" class="text-danger"></span>
+					</div>
+					<div class="col-md-2 d-flex align-items-end mb-1">
+						<div class="form-check">
+							<input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveCheck" />
+							<label asp-for="IsActive" class="form-check-label" for="isActiveCheck">IsActive</label>
+						</div>
+						<span asp-validation-for="IsActive" class="text-danger"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card shadow-sm mb-4">
+			<div class="card-header bg-light border-bottom">
+				<h5 class="mb-0 py-2">Spread Options</h5>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3 align-items-center">
+					<div class="col-12">
+						<div class="form-check">
+							<input asp-for="SpreadOptions.SpreadEnabled" class="form-check-input" type="checkbox" id="spreadEnabledCheck" />
+							<label asp-for="SpreadOptions.SpreadEnabled" class="form-check-label" for="spreadEnabledCheck">Spread Enabled</label>
+						</div>
+						<span asp-validation-for="SpreadOptions.SpreadEnabled" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="row g-3 align-items-center">
+					<div class="col-md-6">
+						<label class="form-label" for="lowerLimitInput">Lower Limit</label>
+						<div class="input-group">
+							<input asp-for="SpreadOptions.LowerLimitPercentage" class="form-control" placeholder="Lower" id="lowerLimitInput" />
+							<span class="input-group-text">%</span>
+						</div>
+						<span asp-validation-for="SpreadOptions.LowerLimitPercentage" class="text-danger"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label class="form-label" for="upperLimitInput">Upper Limit</label>
+						<div class="input-group">
+							<input asp-for="SpreadOptions.UpperLimitPercentage" class="form-control" placeholder="Upper" id="upperLimitInput" />
+							<span class="input-group-text">%</span>
+						</div>
+						<span asp-validation-for="SpreadOptions.UpperLimitPercentage" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="mt-4 text-end">
+					<button type="button" id="cancelConfigBtn" class="btn btn-secondary me-2">Cancel</button>
+					<button type="submit" id="createConfigBtn" name="actionType" value="CreateAjax" class="btn btn-success">Create</button>
+					<input type="hidden" id="hiddenActionType" name="actionType" value="CreateAjax" />
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script src="~/js/consumerConfigs.js"></script>
+<partial name="_ValidationScriptsPartial" />
+<script>
+	$(document).ready(function () {
+		 $('#providerSelect').select2({
+			 placeholder: 'Select exchange providers'
+		 });
+		$('#pairSelect').select2({
+			 placeholder: 'Select exchange providers'
+		 });
+		 $('#marketSelect').select2({
+			 placeholder: 'Select exchange providers'
+		 });
+
+		$('#consumerConfigForm').submit(function (event) {
+			event.preventDefault();
+
+			const form = $(this);
+
+			const url = form.attr('action');
+			const method = form.attr('method');
+			const formData = form.serialize();
+
+			$('#createConfigBtn').prop('disabled', true).text('Creating...');
+			$('#cancelConfigBtn').prop('disabled', true);
+
+			$.ajax({
+				url: url,
+				type: method,
+				data: formData,
+				success: function (response) {
+					$('#createConfigBtn').prop('disabled', false).text('Create');
+					$('#cancelConfigBtn').prop('disabled', false);
+					alert("Consumer configuration added successfully!");
+				},
+				error: function (xhr, status, error) {
+					$('#createConfigBtn').prop('disabled', false).text('Create');
+					$('#cancelConfigBtn').prop('disabled', false);
+
+					let errorMessage = "An error occurred during submission. Please try again.";
+					try {
+						const errorResponse = JSON.parse(xhr.responseText);
+						if (errorResponse && errorResponse.message) {
+							errorMessage = "Error: " + errorResponse.message;
+						} else if (errorResponse && errorResponse.errors) {
+							errorMessage = "Validation Errors:\n" + Object.values(errorResponse.errors).flat().join('\n');
+						}
+					} catch (e) {
+					}
+					alert(errorMessage);
+				}
+			});
+		});
+
+		$('#cancelConfigBtn').click(function() {
+			window.location.href = '@Url.Action("List", "Consumer")';
+		});
+	});
+</script>

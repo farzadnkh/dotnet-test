@@ -1,0 +1,50 @@
+﻿@using ExchangeRateProvider.Admin.Models.Providers
+@model ResponseWrapper<EditProviderModel>
+@{
+    ViewData["Title"] = "Providers";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Edit Provider</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Provider" asp-action="Edit" method="post" id="providerForm">
+                <input type="hidden" asp-for="Response.Id" />
+                <input type="hidden" asp-for="Response.ProviderType" />
+                <div class="col" style="align-items: center;">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Name" class="form-label">Name</label>
+                        <input asp-for="Response.Name" class="form-control" placeholder="Provider Name" />
+                        <span asp-validation-for="Response.Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.ProviderType" class="form-label">Provider Type</label>
+                        @Html.DropDownList("Response.ProviderType", Model.Response.ProviderTypesOptions.Select(x =>
+                                 x.Value == "Crypto Compare" ? new SelectListItem { Text = x.Text, Value = "CryptoCompare" } : x),
+                                 new { @class = "form-control", id = "providerTypeDropdown", @disabled = "disabled" })
+                        <span asp-validation-for="Response.ProviderType" class="text-danger"></span>
+                    </div>
+
+                    @await Html.PartialAsync("/Views/Shared/Partials/_MarketDropdown.cshtml", Model.Response.SelectedMarkets)
+
+                    <div class="col-md-4 form-check">
+                        <input asp-for="Response.Published" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.Published" class="form-check-label">Published</label>
+                    </div>
+                </div>
+                <div class="form-btn mt-4">
+                    <a type="submit" href="@Url.Action("List", "Provider")" value="Cancel" class="btn btn-danger">Cancel</a>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>

@@ -1,0 +1,52 @@
+﻿@using ExchangeRateProvider.Contract.Users.Dtos.Requests
+@model ResponseWrapper<CreateUserModel>
+@{
+    ViewData["Title"] = "Add User";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Create User</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="User" asp-action="Add" method="post" id="userAddForm">
+                <input type="hidden" asp-for="Response.RedirectTo" />
+                <div class="col">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.FirstName" class="form-label">First Name</label>
+                        <input asp-for="Response.FirstName" type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.LastName" class="form-label">Last Name</label>
+                        <input asp-for="Response.LastName" type="text" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Email" class="form-label">Email</label>
+                        <input asp-for="Response.Email" type="text" class="form-control" />
+                        <span asp-validation-for="Response.Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Username" class="form-label">Username</label>
+                        <input asp-for="Response.Username" type="text" class="form-control" />
+                        <span asp-validation-for="Response.Username" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 form-check mt-3">
+                        <input asp-for="Response.IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.IsActive" class="form-check-label">Is Active</label>
+                    </div>
+                    <div class="form-btn mt-4">
+                        <a type="submit" href="@Url.Action("List", "User")" value="Cancel" class="btn btn-danger">Cancel</a>
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>

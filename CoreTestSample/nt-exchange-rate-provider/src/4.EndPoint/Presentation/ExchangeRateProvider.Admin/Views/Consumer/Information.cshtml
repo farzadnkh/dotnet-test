@@ -1,0 +1,298 @@
+﻿@model ResponseWrapper<CreateConsumerModel>
+
+@{
+}
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm mb-4" style="margin: 15px">
+        <div class="card-body">
+            @if (!Model.Response.IsEditMode)
+            {
+                <form id="createMainForm">
+                    <div class="security-input-group">
+                        <label asp-for="Response.ProjectName" class="form-label">Project Name</label>
+                        <div class="security-input-wrapper">
+                            <input asp-for="Response.ProjectName" class="form-control" />
+                            <span asp-validation-for="Response.ProjectName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="security-input-group">
+                        <label asp-for="@Model.Response.UserName" class="form-label">Customer</label>
+                        <div class="secret-section">
+                            <div class="secret-input security-input-wrapper">
+                                @Html.DropDownList("Response.UserId",
+                                         new SelectList(Model.Response.Users, "Value", "Text"),
+                                         "Select One",
+                                         new
+                                         {
+                                             @class = "form-control",
+                                             @required = "required",
+                                         })
+                                <span asp-validation-for="@Model.Response.UserName" class="text-danger"></span>
+                            </div>
+                            <a href="/User/Add?redirectTo=consumer" target="_blank" class="btn-generate">
+                                Create Customer
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="security-input-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="Response.IsActive" id="isActive">
+                            <label class="form-check-label" for="isActive">
+                                Is Active
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="@Url.Action("List", "Consumer")" class="btn btn-danger">Cancel</a>
+                        <button type="submit" id="createConsumer" value="CreateContinue" class="btn btn-success">
+                            Create & Continue
+                        </button>
+
+                    </div>
+                </form>
+            }
+
+            @if (Model.Response.IsEditMode)
+            {
+                @Html.HiddenFor(x => x.Response.ConsumerId)
+                <div class="security-input-group">
+                    <label asp-for="Response.ProjectName" class="form-label">Project Name</label>
+                    <div class="security-input-wrapper">
+                        <input asp-for="Response.ProjectName" class="form-control" disabled />
+                        <span asp-validation-for="Response.ProjectName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="security-input-group">
+                    <label asp-for="@Model.Response.UserName" class="form-label">Customer</label>
+                    <div class="security-input-wrapper">
+                        <input asp-for="Response.UserName" class="form-control" disabled />
+                    </div>
+                </div>
+
+                <div class="security-input-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="Response.IsActive" id="isActive">
+                        <label class="form-check-label" for="isActive">
+                            Is Active
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="@Url.Action("List", "Consumer")" class="btn btn-danger">Cancel</a>
+                    <button type="submit" id="update_consumer_information" value="Save" class="btn btn-success">
+                        Save
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/js/sweetAlertConfig.js"></script>
+<script>
+    $(document).on('ready', () => {
+        $("#createConsumer").on('click', () => {
+            AddConsumerInformation();
+        });
+
+        $("#update_consumer_information").on('click', () => {
+            UpdateConsumerInformation();
+        });
+    })
+
+    function AddConsumerInformation() {
+        document.getElementById('createMainForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch('@Url.Action("AddConsumerInformation", "Consumer")', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to save");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.isSuccess) {
+                        showSuccessMessage("Successfully Done.");
+
+                        if (data.data.redirectUrl) {
+                            window.location.href = data.data.redirectUrl + '?id=' + data.response + '&mode=Create';
+                        }
+                    } else {
+                        showErrorMessage(data.errors);
+                    }
+                })
+                .catch(error => {
+                    showErrorMessage("Error: " + error.message);
+                });
+        });
+    }
+
+    function UpdateConsumerInformation() {
+            var consumerId =  $("#ConsumerId").val();
+            var isActive = $("#isActive").prop('checked');
+
+            var body = {
+                id: consumerId,
+                isActive: isActive
+            }
+
+
+            fetch('@Url.Action("Activate", "Consumer")', {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: { 
+                    'Content-Type': 'application/json' 
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to save");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.isSuccess) {
+                        showSuccessMessage("Successfully Done.");
+                    } else {
+                        showErrorMessage("Update Information Failed.");
+                    }
+                })
+                .catch(error => {
+                    showErrorMessage("Error: " + error.message);
+                });
+    }
+
+    function goToSecurityTab() {
+        const tabButton = document.querySelector('#security-tab');
+        tabButton.classList.remove('disabled');
+        const tab = new bootstrap.Tab(tabButton);
+        tab.show();
+    }
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 40px;
+        color: #333;
+        background-color: #f9f9f9;
+    }
+
+    .security-input-group {
+        margin-bottom: 25px;
+    }
+
+        .security-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+    .security-input-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .security-input-wrapper input,
+        .security-input-wrapper select {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            width: 100%;
+        }
+
+    .form-check {
+        margin-top: 15px;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .opacity-50 {
+        opacity: 0.5;
+    }
+
+    .cursor-not-allowed {
+        cursor: not-allowed;
+    }
+
+    .ms-2 {
+        margin-left: 0.5rem;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .secret-input {
+        flex: 1;
+    }
+
+    .secret-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-generate {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+    }
+
+        .btn-generate:hover {
+            background-color: #2980b9;
+            text-decoration: none;
+        }
+
+    .secret-input select{
+        height: 100%;
+    }
+</style>

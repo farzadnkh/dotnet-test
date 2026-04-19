@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ExchangeRateProvider.EndPoint.ApiGateway.App": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:50237;http://localhost:50238"
+    }
+  }
+}

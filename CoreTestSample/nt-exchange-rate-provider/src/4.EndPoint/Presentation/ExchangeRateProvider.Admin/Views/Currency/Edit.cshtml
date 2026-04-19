@@ -1,0 +1,70 @@
+﻿@using ExchangeRateProvider.Admin.Models.Currencies
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model ResponseWrapper<CreateCurrencyModel>
+@{
+    ViewData["Title"] = "Currencies";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Edit Currency</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Currency" asp-action="Edit" method="post">
+                @Html.HiddenFor(m => m.Response.Type)
+                @Html.HiddenFor(m => m.Response.Code)
+                <div class="col">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Name" class="form-label">Name</label>
+                        <input asp-for="Response.Name" class="form-control" placeholder="Currency Name" />
+                        <span asp-validation-for="Response.Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Code" class="form-label">Currency Code</label>
+                        <input asp-for="Response.Code" class="form-control" placeholder="USD" disabled />
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Type" class="form-label">Currency Type</label>
+                        @Html.DropDownList("Response.Type", Model.Response.CurrencyTypesOptions, new { @class = "form-control", @placeholder = "Select Type", @disabled = "disabled" })
+                        <span asp-validation-for="Response.Type" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.DecimalPrecision" class="form-label">Decimal Precision</label>
+                        <input asp-for="Response.DecimalPrecision" type="number" class="form-control" placeholder="0" />
+                        <span asp-validation-for="Response.DecimalPrecision" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col" style="align-items: center;">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.SelectedMarketIds" class="form-label">Supported Markets</label>
+                        @Html.DropDownList("Response.SelectedMarketIds", Model.Response.MarketOptions, new { @class = "form-control", @placeholder = "Select Market" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.Symbol" class="form-label">Currency Symbol</label>
+                        <input asp-for="Response.Symbol" class="form-control" placeholder="$" />
+                        <span asp-validation-for="Response.Symbol" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4 form-check">
+                        <input asp-for="Response.Published" class="form-check-input" type="checkbox" />
+                        <label asp-for="Response.Published" class="form-check-label">Published</label>
+                    </div>
+                </div>
+                <div class="form-btn mt-4">
+                    <a type="submit" href="@Url.Action("List", "Currency")" value="Cancel" class="btn btn-danger">Cancel</a>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>

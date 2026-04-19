@@ -1,0 +1,91 @@
+﻿@using ExchangeRateProvider.Contract.Settings.Dtos
+
+@model ResponseWrapper<SettingModel>
+@{
+    ViewData["Title"] = "Setting";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card-header bg-light border-bottom">
+            <h5 class="mb-0">Setting</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Setting" asp-action="Save" method="post" id="SettingForm">
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.SnapshotClockTime" class="form-label">Snapshot Clock time</label>
+                        <div class="input-group">
+                            <input asp-for="Response.SnapshotClockTime" type="number" class="form-control" placeholder="1000"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="This input should be in milliseconds. (1000 milliseconds = 1 second)" />
+                            <span class="input-group-text">ms</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.PercentageDifference" class="form-label">Percentage Difference</label>
+                        <div class="input-group">
+                            <input asp-for="Response.PercentageDifference" class="form-control" placeholder="0" />
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.TimeDifference" class="form-label">Time Difference</label>
+                        <div class="input-group">
+                            <input asp-for="Response.TimeDifference" type="number" class="form-control" placeholder="1000"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="This input should be in milliseconds. (1000 milliseconds = 1 second)" />
+                            <span class="input-group-text">ms</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.CryptoJobsInterval" class="form-label">CryptoJobs Interval</label>
+                        <div class="input-group">
+                            <input asp-for="Response.CryptoJobsInterval" type="number" class="form-control" placeholder="1"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="This input should be in minutes." />
+                            <span class="input-group-text">m</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.FiatJobsInterval" class="form-label">FiatJobs Interval</label>
+                        <div class="input-group">
+                            <input asp-for="Response.FiatJobsInterval" type="number" class="form-control" placeholder="5"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
+                                   title="This input should be in minutes." />
+                            <span class="input-group-text">m</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Response.ManualRateChangePercentage" class="form-label">ManualRateChange Percentage</label>
+                        <div class="input-group">
+                            <input asp-for="Response.ManualRateChangePercentage" type="number" class="form-control" placeholder="10" />
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>

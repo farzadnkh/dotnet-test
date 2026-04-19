@@ -1,0 +1,32 @@
+﻿@model ResponseWrapper<CreateConsumerModel>
+
+@{
+    ViewData["Title"] = "Add Consumer";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="information-tab" data-bs-toggle="tab" data-bs-target="#information" type="button" role="tab">Information</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link disabled" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">Security</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link disabled" id="business-tab" data-bs-toggle="tab" data-bs-target="#business" type="button" role="tab">Business</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <div class="tab-pane fade show active" id="information" role="tabpanel">
+            @await Html.PartialAsync("Information", Model)
+        </div>
+        <div class="tab-pane fade" id="security" role="tabpanel">
+            @await Html.PartialAsync("Security")
+        </div>
+        <div class="tab-pane fade" id="business" role="tabpanel">
+            @await Html.PartialAsync("Business")
+        </div>
+    </div>
+</div>

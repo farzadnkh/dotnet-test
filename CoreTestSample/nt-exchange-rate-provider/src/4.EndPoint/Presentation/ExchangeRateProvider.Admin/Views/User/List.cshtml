@@ -1,0 +1,156 @@
+﻿@using ExchangeRateProvider.Admin.Models.Users
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model GetUserListModel
+@{
+	ViewData["Title"] = "Users";
+	Layout = "_Layout";
+}
+
+<h1>@ViewData["Title"] List</h1>
+
+<form asp-controller="User" asp-action="List" method="get" class="mb-4">
+	<div class="row align-items-center">
+		<div class="col-md-2">
+			<strong>Email:</strong>
+			<input type="text" name="Email" value="@Model.Email" class="form-control" />
+		</div>
+		<div class="col-md-2">
+			<strong>Username:</strong>
+			<input type="text" name="UserName" value="@Model.UserName" class="form-control" />
+		</div>
+		<div class="col-md-2">
+			<strong for="IsActive">IsActive:</strong>
+			@Html.DropDownList("IsActive", Model.ActiveOptions, new { @class = "form-control", @placeholder = "Select Type" })
+		</div>
+		<div class="col-md-2 mt-4">
+			<button type="submit" class="btn btn-success btn-sm">Search</button>
+			<a asp-controller="User" asp-action="Add" class="btn btn-info btn-sm">Create</a>
+		</div>
+	</div>
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+	<form asp-controller="User" asp-action="List" method="get" id="pageSizeForm">
+		<div class="input-group">
+			<label for="Size" class="input-group-text">Items per page:</label>
+			@Html.DropDownList("Size", Model.SizeOptions, new { @class = "form-select", onchange = "this.form.submit();" })
+
+			<input type="hidden" name="name" value="@Model.Email" />
+			<input type="hidden" name="published" value="@Model.Published" />
+			<input type="hidden" name="provider" value="@Model.UserName" />
+			<input type="hidden" name="index" value="1" />
+		</div>
+	</form>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<th>UserName</th>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Email</th>
+			<th>CreatedAt</th>
+			<th>Action</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody>
+		@foreach (var user in Model.PaginationResponse.Items)
+		{
+			<tr>
+				<td>@user.UserName</td>
+				<td>@user.FirstName</td>
+				<td>@user.LastName</td>
+				<td>@user.Email</td>
+				<td>@user.CreatedAt</td>
+				<td>@(user.IsActive ? "✅" : "❌")</td>
+				<td class="action d-flex align-items-center">
+					<a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="nav-link active">
+						<i class="fa fa-edit"></i>
+					</a>
+					<button type="button" class="btn btn-sm btn-primary list-btn open-deactive-modal"
+					        data-id="@user.Id">
+						<i class="fa fa-times"></i>
+					</button>
+				</td>
+			</tr>
+		}
+		</tbody>
+	</table>
+</div>
+
+<nav aria-label="Users Pagination" class="mt-4">
+	<ul class="pagination justify-content-center">
+		@{
+			var totalPages = Model.PaginationResponse.Base.Total;
+			var currentPage = Model.PaginationResponse.Base.Index;
+		}
+
+		<li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+			<a class="page-link" asp-route-index="@(currentPage - 1)" asp-route-size="@Model.PaginationResponse.Base.Size">Previous</a>
+		</li>
+
+		@for (int i = 1; i <= totalPages; i++)
+		{
+			<li class="page-item @(i == currentPage ? "active" : "")">
+				<a class="page-link" asp-route-index="@i" asp-route-size="@Model.PaginationResponse.Base.Size">@i</a>
+			</li>
+		}
+
+		<li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+			<a class="page-link" asp-route-index="@(currentPage + 1)" asp-route-size="@Model.PaginationResponse.Base.Size">Next</a>
+		</li>
+	</ul>
+</nav>
+
+<div id="deactiveModal" class="modal fade" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered animate__animated">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Confirm Deactivation</h5>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to deactivate this user?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success deactive-btn">Yes</button>
+				<button type="button" class="btn btn-danger cancel-btn" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+	let userId = 0;
+
+	const deactiveModal = new bootstrap.Modal(document.getElementById("deactiveModal"));
+
+	$(document).on("click", ".open-deactive-modal", function () {
+		userId = $(this).data("id");
+		$(".modal-dialog").removeClass("animate__fadeOutUp").addClass("animate__fadeInDown");
+		deactiveModal.show();
+	});
+
+	$(document).on("click", ".cancel-btn", function () {
+		userId = $(this).data("id");
+		$(".modal-dialog").removeClass("animate__fadeInDown").addClass("animate__fadeOutUp");
+		deactiveModal.hide();
+	});
+
+	$(document).on("click", ".deactive-btn", () => {
+		$.ajax({
+			url: `/User/DeActive/${userId}`,
+			type: "GET",
+			success: function () {
+				location.reload();
+			},
+			error: function () {
+				alert("Failed to deactivate consumer.");
+			}
+		});
+	});
+
+</script>

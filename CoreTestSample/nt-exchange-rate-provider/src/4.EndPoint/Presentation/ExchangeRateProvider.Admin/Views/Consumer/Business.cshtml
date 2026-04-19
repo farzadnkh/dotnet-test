@@ -1,0 +1,795 @@
+﻿@model ResponseWrapper<CreateConsumerModel>
+
+@{
+    var viewMode = ViewBag.ViewMode;
+}
+
+<body>
+    <div class="container-fluid mt-4">
+        <form asp-controller="Consumer" asp-action="Edit" method="post" id="createBusinessForm">
+            <div class="card">
+                <div class="card shadow-sm mb-4" style="margin: 15px">
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0 py-2">Consumer Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Provider Dropdown -->
+                            <div class="col-md-4">
+                                <label asp-for="Response.ProviderIds" class="form-label">Exchange Rate Providers</label>
+                                <div id="providerDropdownSection" class="relative">
+                                    <button type="button" id="toggleProviderDropdownBtn"
+                                            class="w-full text-left bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <span>Select Providers</span>
+                                        <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="providerDropdownArrow">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="providerDropdownList"
+                                         class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden hide-scrollbar">
+                                        <p class="p-4 text-gray-500" id="loadingProviderText">Loading providers...</p>
+                                    </div>
+                                </div>
+                                <div id="selectedProvidersDisplay"
+                                     class="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg max-h-24 overflow-y-auto hide-scrollbar mt-2">
+                                    <p class="text-gray-500" id="noProvidersSelected">No providers selected.</p>
+                                </div>
+                                <input type="hidden" id="selectedProviderIdsHidden" name="Response.ProviderIds"
+                                       data-initial="@Html.Raw(Json.Serialize(Model.Response.ProviderIds ?? new List<string>()))" />
+                                <span asp-validation-for="Response.ProviderIds" class="text-danger"></span>
+                            </div>
+
+                            <!-- Market Dropdown -->
+                            <div class="col-md-4">
+                                <label asp-for="Response.MarketIds" class="form-label">Market</label>
+                                <div id="marketDropdownSection" class="relative">
+                                    <button type="button" id="toggleMarketDropdownBtn"
+                                            class="w-full text-left bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <span>Select Markets</span>
+                                        <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="marketDropdownArrow">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="marketDropdownList"
+                                         class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden hide-scrollbar">
+                                        <p class="p-4 text-gray-500" id="loadingMarketText">Loading markets...</p>
+                                    </div>
+                                </div>
+                                <div id="selectedMarketsDisplay"
+                                     class="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg max-h-24 overflow-y-auto hide-scrollbar mt-2">
+                                    <p class="text-gray-500" id="noMarketsSelected">No markets selected.</p>
+                                </div>
+                                <input type="hidden" id="selectedMarketIdsHidden" name="Response.MarketIds"
+                                       data-initial="@Html.Raw(Json.Serialize(Model.Response.MarketIds ?? new List<string>()))" />
+                                <span asp-validation-for="Response.MarketIds" class="text-danger"></span>
+                            </div>
+
+                            <!-- Pair Dropdown -->
+                            <div class="col-md-4">
+                                <label asp-for="Response.PairIds" class="form-label">Pair</label>
+                                <div id="pairDropdownSection" class="relative">
+                                    <button type="button" id="togglePairDropdownBtn"
+                                            class="w-full text-left bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <span>Select Pairs</span>
+                                        <svg class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor"
+                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="pairDropdownArrow">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <div id="pairDropdownList"
+                                         class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden hide-scrollbar">
+                                        <p class="p-4 text-gray-500" id="loadingPairText">Loading pairs...</p>
+                                    </div>
+                                </div>
+                                <div id="selectedPairsDisplay"
+                                     class="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg max-h-24 overflow-y-auto hide-scrollbar mt-2">
+                                    <p class="text-gray-500" id="noPairsSelected">No pairs selected.</p>
+                                </div>
+                                <input type="hidden" id="selectedPairIdsHidden" name="Response.PairIds"
+                                       data-initial="@Html.Raw(Json.Serialize(Model.Response.PairIds ?? new List<string>()))" />
+                                <span asp-validation-for="Response.PairIds" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4" id="Security Options" style="margin: 15px;">
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0 py-2">Security Options</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="ipWhitelistInputCustom" class="form-label">IP Whitelist</label>
+                                <div class="tag-input-wrapper form-control" id="ipTagContainer">
+                                    <input type="text" class="tag-input" id="ipWhitelistInputCustom" placeholder="Add IP addresses..." aria-describedby="ipValidationFeedback">
+                                </div>
+                                @Html.HiddenFor(x => x.Response.WhiteListIps, new { id = "ipWhitelistHiddenInput" })
+                                <div id="ipValidationFeedback" class="invalid-feedback-custom"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="TokenTtl">
+                                    Token Time To Live
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Response.TokenTtl" class="form-control" placeholder="3600" id="Response.TokenTtl" />
+                                    <span class="input-group-text">Second</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4" id="spreadOptionsCard" style="margin: 15px;">
+                    <div class="card-header bg-light border-bottom">
+                        <h5 class="mb-0 py-2">Spread Options</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input asp-for="Response.SpreadOptions.SpreadEnabled" class="form-check-input" type="checkbox" id="spreadEnabledCheck" />
+                                    <label asp-for="Response.SpreadOptions.SpreadEnabled" class="form-check-label" for="spreadEnabledCheck">Spread Enabled</label>
+                                </div>
+                                <span asp-validation-for="Response.SpreadOptions.SpreadEnabled" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="form-label" for="lowerLimitInput">Lower Limit</label>
+                                <div class="input-group">
+                                    <input asp-for="Response.SpreadOptions.LowerLimitPercentage" class="form-control" placeholder="Lower" id="lowerLimitInput" />
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <span asp-validation-for="Response.SpreadOptions.LowerLimitPercentage" class="text-danger" id="lowerLimitError"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="upperLimitInput">Upper Limit</label>
+                                <div class="input-group">
+                                    <input asp-for="Response.SpreadOptions.UpperLimitPercentage" class="form-control" placeholder="Upper" id="upperLimitInput" />
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <span asp-validation-for="Response.SpreadOptions.UpperLimitPercentage" class="text-danger" id="upperLimitError"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-btn mt-4">
+                    <a href="@Url.Action("List", "Consumer")" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" name="actionType" value="CreateAjax" class="btn btn-success">Save</button>
+                </div>
+            </div>
+
+            <input type="hidden" name="Response.ConsumerId" value="@Model.Response.ConsumerId" />
+            <input type="hidden" name="Response.UserId" value="@Model.Response.UserId" />
+            <input type="hidden" name="Response.Email" value="@Model.Response.Email" />
+            <input type="hidden" name="Response.UserName" value="@Model.Response.UserName" />
+            <input type="hidden" name="Response.ProjectName" value="@Model.Response.ProjectName" />
+            <input type="hidden" name="Response.FirstName" value="@Model.Response.FirstName" />
+            <input type="hidden" name="Response.LastName" value="@Model.Response.LastName" />
+            <input type="hidden" name="Response.ApiKey" value="@Model.Response.ApiKey" />
+            <input type="hidden" name="Response.ClientId" value="@Model.Response.ClientId" />
+            <input type="hidden" name="Response.ClientSecret" value="@Model.Response.ClientSecret" />
+            <input type="hidden" name="Response.Published" value="@Model.Response.Published" />
+            <input type="hidden" name="Response.ProviderIds" value="@Model.Response.ProviderIds" />
+            <input type="hidden" name="Response.MarketIds" value="@Model.Response.MarketIds" />
+            <input type="hidden" name="Response.PairIds" value="@Model.Response.PairIds" />
+            <input type="hidden" name="Response.Token" value="@Model.Response.TokenTtl" />
+            <input type="hidden" name="Response.SpreadOptions.SpreadEnabled" value="@Model.Response.SpreadOptions?.SpreadEnabled" />
+            <input type="hidden" name="Response.SpreadOptions.UpperLimitPercentage" value="@Model.Response.SpreadOptions?.UpperLimitPercentage" />
+            <input type="hidden" name="Response.SpreadOptions.LowerLimitPercentage" value="@Model.Response.SpreadOptions?.LowerLimitPercentage" />
+        </form>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+            .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+            }
+
+        .selected-tag-close {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #ef4444;
+            transition: color 0.2s;
+        }
+
+            .selected-tag-close:hover {
+                color: #b91c1c;
+            }
+
+        .hidden {
+            display: none !important;
+        }
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-backdrop-blur: 10px;
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            --blue-primary: #D6E8FF; 
+            --blue-text: #0D6EFD; 
+            --blue-border-focus: #82B4FF; 
+            --blue-shadow-focus: rgba(13, 110, 253, 0.25); 
+            --blue-tag-bg: #D6E8FF; 
+            --text-color-light: #f8f9fa;
+            --text-color-dark: #343a40;
+            --error-color: #dc3545; 
+            --error-shadow: rgba(220, 53, 69, 0.25);
+            --warning-bg: #FFFBEB; 
+            --warning-text: #B45309;
+            --warning-border: #FCD34D;
+        }
+
+        .warning-chip {
+            background: var(--warning-bg) !important;
+            color: var(--warning-text) !important;
+            border: 1px solid var(--warning-border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* A softer shadow */
+            font-size: 12px;
+            border-radius: 8px;
+            padding: 5px;
+        }
+        }
+
+            .warning-chip .selected-tag-close {
+                color: var(--warning-text) !important; /* Keep 'x' consistent with text */
+            }
+
+                .warning-chip .selected-tag-close:hover {
+                    color: #dc2626 !important; /* Red on hover for clear removal */
+                }
+
+        .form-section {
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 12px; /* Slightly more rounded */
+            background-color: #fff;
+            box-shadow: var(--glass-shadow); /* Subtle shadow for depth */
+        }
+
+            .form-section h5 {
+                margin-bottom: 20px;
+                color: var(--blue-text); /* Header color aligned with new blue theme */
+                font-weight: 600;
+            }
+
+        .input-group-text {
+            min-width: 50px;
+        }
+
+        .text-end {
+            margin-top: 20px;
+        }
+
+        /* --- Custom Tag Input Styles (Glassy & Modern - Light Blue Theme) --- */
+        .tag-input-wrapper {
+            display: flex!important;
+            align-content: center !important;
+            gap: 0.1em !important;
+        }
+
+            .tag-input-wrapper:focus-within {
+                border-color: var(--blue-border-focus); /* Light blue border on focus */
+                box-shadow: 0 0 0 0.25rem var(--blue-shadow-focus); /* Light blue focus shadow */
+                background: rgba(255, 255, 255, 0.15); /* Slightly brighter on focus */
+            }
+
+            .tag-input-wrapper .tag {
+                display: inline-flex;
+                align-items: center;
+                background: var(--blue-tag-bg); /* Light blue background for tags */
+                color: var(--blue-text); /* Darker blue text for better contrast on light tag */
+                padding: .6em 1em; /* Slightly larger padding for tags */
+                border-radius: 8px; /* Rounded tag corners */
+                font-size: .9em;
+                line-height: 1;
+                font-weight: 500;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Softer shadow for tags */
+                user-select: none; /* Prevent text selection within tag */
+                animation: fadeIn .3s ease-out; /* Fade in animation */
+            }
+
+                .tag-input-wrapper .tag .tag-remove {
+                    background: none;
+                    border: none;
+                    color: var(--error-color); /* Darker blue 'x' for better contrast */
+                    margin-left: .6em;
+                    padding: 0;
+                    cursor: pointer;
+                    font-weight: 600; /* Bolder 'x' */
+                    font-size: 1.1em;
+                    line-height: 1;
+                    opacity: .8;
+                    transition: opacity 0.2s ease;
+                }
+
+                    .tag-input-wrapper .tag .tag-remove:hover {
+                        opacity: 1;
+                        color: var(--error-color); /* Red 'x' on hover for clear removal action */
+                    }
+
+            .tag-input-wrapper .tag-input {
+                flex-grow: 1;
+                border: none;
+                outline: none;
+                box-shadow: none;
+                background: transparent;
+                padding: 0;
+                margin: .2rem 0; /* Align with tags */
+                min-width: 100px;
+                color: var(--text-color-dark); /* Ensure text is visible on glassy background */
+            }
+
+                .tag-input-wrapper .tag-input::placeholder {
+                    color: rgba(52, 58, 64, 0.6); /* Lighter placeholder text */
+                }
+
+            /* Error/Invalid State for Input Wrapper */
+            .tag-input-wrapper.is-invalid-input {
+                border-color: var(--error-color) !important;
+                box-shadow: 0 0 0 0.25rem var(--error-shadow); /* Red shadow for error */
+                background: rgba(220, 53, 69, 0.05); /* Very light red glassy background */
+            }
+
+        /* No text feedback below input for invalid, only visual input change */
+        .invalid-feedback-custom {
+            display: none !important; /* Hide the textual error message */
+        }
+
+        /* Specific style for an individual invalid tag (if we wanted to highlight one within the wrapper) */
+        .tag-input-wrapper .tag.is-invalid-tag {
+            background-color: var(--error-color);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset; /* White inner border for invalid tag */
+        }
+    </style>
+    <script src="~/js/spreadoption.js"></script>
+    <script src="~/js/sweetAlertConfig.js"></script>
+    <script src="~/js/WhiteListIp.js"></script>
+    <script src="~/js/consumer.js"></script>
+
+    <script>
+            function logDebug(message) {
+                console.log(`[DEBUG] ${message}`);
+            }
+
+            class DropdownComponent {
+                constructor(config) {
+                    this.config = {
+                        items: [],
+                        selectedItems: [],
+                        toggleBtnId: '',
+                        listId: '',
+                        arrowId: '',
+                        containerId: '',
+                        displayId: '',
+                        noTextId: '',
+                        loadingTextId: '',
+                        hiddenInputId: '',
+                        selectAllId: '',
+                        label: '',
+                        onSelectionChange: null,
+                        ...config
+                    };
+                    this.init();
+                }
+
+                init() {
+                    try {
+                        const hiddenInput = document.querySelector(`#${this.config.hiddenInputId}`);
+                        if (hiddenInput) {
+                            const initialItems = JSON.parse(hiddenInput.dataset.initial || '[]');
+                            if (Array.isArray(initialItems)) {
+                                this.config.selectedItems = initialItems.map(String); // Convert all to strings
+                            }
+                        } else {
+                            logDebug(`Hidden input for ${this.config.label} not found`);
+                        }
+                    } catch (e) {
+                        console.error(`Error parsing initial data for ${this.config.label}:`, e);
+                    }
+
+                    this.renderDropdownItems();
+                    this.renderSelectedItemsDisplay();
+                    this.updateHiddenInput();
+                    this.bindEvents();
+                }
+
+                renderDropdownItems() {
+                    const list = document.querySelector(`#${this.config.listId}`);
+                    if (!list) {
+                        return;
+                    }
+
+                    list.innerHTML = '';
+
+                    if (!this.config.items.length) {
+                        list.innerHTML = `<p class="p-4 text-gray-500 font-semibold">No ${this.config.label}s available.</p>`;
+                        return;
+                    }
+
+                    const selectAllLabel = document.createElement('label');
+                    selectAllLabel.className = 'flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer transition-colors duration-200 border-b border-gray-200';
+                    selectAllLabel.innerHTML = `
+                        <input type="checkbox" id="${this.config.selectAllId}" class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500">
+                        <span class="ml-3 text-gray-900 font-semibold">Select All</span>
+                    `;
+                    list.appendChild(selectAllLabel);
+
+                    this.config.items.forEach(item => {
+        //                const isChecked = this.config.selectedItems.includes(String(item.value));
+                        const isChecked = this.config.selectedItems.some(selected => String(selected) === String(item.value));
+                        const label = document.createElement('label');
+                        label.className = 'flex items-center px-4 py-2 hover:bg-blue-50 cursor-pointer transition-colors duration-200 rounded';
+                        label.innerHTML = `
+                            <input type="checkbox" value="${encodeURIComponent(item.value)}" ${isChecked ? 'checked' : ''} class="form-checkbox h-4 w-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-3 text-gray-800 capitalize">${item.text}</span>
+                        `;
+                        list.appendChild(label);
+                    });
+
+                    const selectAll = document.querySelector(`#${this.config.selectAllId}`);
+                    if (selectAll) {
+                        selectAll.checked = this.config.items.every(item => this.config.selectedItems.includes(String(item.value)));
+                    }
+                }
+
+                renderSelectedItemsDisplay() {
+                    const display = document.querySelector(`#${this.config.displayId}`);
+                    const noText = document.querySelector(`#${this.config.noTextId}`);
+                    if (!display || !noText) {
+                        return;
+                    }
+
+                    Array.from(display.children).forEach(child => {
+                        if (child.id !== this.config.noTextId) display.removeChild(child);
+                    });
+
+                    if (display.firstChild !== noText) {
+                        display.insertBefore(noText, display.firstChild);
+                    }
+
+                    if (!this.config.selectedItems.length) {
+                        noText.classList.remove('hidden');
+                    } else {
+                        noText.classList.add('hidden');
+                        this.config.selectedItems.forEach(value => {
+                            const text = this.getTextByValue(value);
+                            const span = document.createElement('span');
+                            span.className = 'bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full shadow-sm flex items-center';
+                            span.textContent = text;
+                            const closeBtn = document.createElement('span');
+                            closeBtn.className = 'selected-tag-close';
+                            closeBtn.innerHTML = '×';
+                            closeBtn.dataset.value = value;
+                            span.appendChild(closeBtn);
+                            display.appendChild(span);
+                        });
+                    }
+                }
+
+                getTextByValue(value) {
+                    const item = this.config.items.find(i => String(i.value) === String(value));
+                    return item ? item.text : value;
+                }
+
+                updateHiddenInput() {
+                    const hiddenInput = document.querySelector(`#${this.config.hiddenInputId}`);
+                    if (hiddenInput) {
+                        hiddenInput.value = JSON.stringify(this.config.selectedItems);
+                    }
+                }
+
+                toggleDropdown() {
+                    const list = document.querySelector(`#${this.config.listId}`);
+                    const arrow = document.querySelector(`#${this.config.arrowId}`);
+                    if (!list || !arrow) {
+                        return;
+                    }
+
+                    list.classList.toggle('hidden');
+                    arrow.classList.toggle('rotate-180');
+                }
+
+                async updateItems(newItems) {
+                    const loadingText = document.querySelector(`#${this.config.loadingTextId}`);
+                    const list = document.querySelector(`#${this.config.listId}`);
+                    if (loadingText) loadingText.classList.remove('hidden');
+                    if (list) list.innerHTML = '';
+
+                    this.config.selectedItems = this.config.selectedItems.filter(selectedValue =>
+                        newItems.some(newItem => String(newItem.value) === String(selectedValue))
+                    );
+
+                    this.config.items = newItems;
+                    this.renderDropdownItems();
+                    this.renderSelectedItemsDisplay();
+                    this.updateHiddenInput();
+                    if (loadingText) loadingText.classList.add('hidden');
+                }
+
+                bindEvents() {
+                    const toggleBtn = document.querySelector(`#${this.config.toggleBtnId}`);
+                    const list = document.querySelector(`#${this.config.listId}`);
+                    const display = document.querySelector(`#${this.config.displayId}`);
+
+                    if (toggleBtn) {
+                        toggleBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            this.toggleDropdown();
+                        });
+                    } 
+
+                    if (list) {
+                        list.addEventListener('change', (e) => {
+                            const checkbox = e.target;
+                            if (checkbox.type !== 'checkbox') return;
+
+                            const value = decodeURIComponent(checkbox.value);
+                            if (checkbox.id === this.config.selectAllId) {
+                                //this.config.selectedItems = checkbox.checked ? this.config.items.map(i => String(i.value)) : [];
+                                this.config.selectedItems = checkbox.checked
+                                    ? [...new Set(this.config.items.map(i => String(i.value)))]
+                                    : [];
+                            } else {
+                                if (checkbox.checked) {
+                                    if (!this.config.selectedItems.includes(value)) {
+                                        this.config.selectedItems.push(value);
+                                    }
+                                } else {
+                                    this.config.selectedItems = this.config.selectedItems.filter(i => i !== value);
+                                }
+                            }
+
+                            this.renderDropdownItems();
+                            this.renderSelectedItemsDisplay();
+                            this.updateHiddenInput();
+                            if (this.config.onSelectionChange) {
+                                this.config.onSelectionChange(this.config.selectedItems);
+                            }
+                        });
+                    }
+
+                    if (display) {
+                        display.addEventListener('click', (e) => {
+                            if (e.target.classList.contains('selected-tag-close')) {
+                                const value = e.target.dataset.value;
+                                this.config.selectedItems = this.config.selectedItems.filter(i => i !== value);
+                                this.renderDropdownItems();
+                                this.renderSelectedItemsDisplay();
+                                this.updateHiddenInput();
+                                if (this.config.onSelectionChange) {
+                                    this.config.onSelectionChange(this.config.selectedItems);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            function handleClickOutside(event, dropdowns) {
+                dropdowns.forEach(dropdown => {
+                    const container = document.querySelector(`#${dropdown.config.containerId}`);
+                    const list = document.querySelector(`#${dropdown.config.listId}`);
+                    const arrow = document.querySelector(`#${dropdown.config.arrowId}`);
+                    if (container && !container.contains(event.target)) {
+                        if (list) list.classList.add('hidden');
+                        if (arrow) arrow.classList.remove('rotate-180');
+                    }
+                });
+            }
+
+            let providerDropdown, marketDropdown, pairDropdown, scopeDropdown;
+
+                                   
+
+            async function reloadDependentDropdowns(selectedProviderIds, selectedMarketIds) {
+                const selectedPairIds = JSON.parse(document.querySelector('#selectedPairIdsHidden')?.value || '[]').map(String);
+
+                try {
+                    const marketQueryParams = new URLSearchParams();
+                    if (selectedProviderIds.length > 0) {
+                        selectedProviderIds.forEach(id => marketQueryParams.append('selectedProviderIds', id));
+                         $("#noMarketsSelected").html(`<span class="warning-chip"><span>All the markets related to the selected providers have been selected.</span></span>`);
+                    }
+                    else{
+                         console.warn(`selectedProvider insideMarketsection:${selectedProviderIds.length}`);
+                         $("#noMarketsSelected").html('<p class="text-gray-500" id="noMarketsSelected">No markets selected.</p>');
+                    }
+                    if (selectedMarketIds.length > 0) {
+                        selectedMarketIds.forEach(id => marketQueryParams.append('selectedIds', id));
+                    }
+                    marketQueryParams.append('isListFilter', 'false');
+
+                    const marketResponse = await fetch(`/ConsumerConfiguration/GetMarkets?${marketQueryParams.toString()}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!marketResponse.ok) throw new Error(`Failed to fetch markets: ${marketResponse.status}`);
+                    const markets = await marketResponse.json();
+                    await marketDropdown.updateItems(markets.map(item => ({ value: item.value, text: item.text })));
+                } catch (error) {
+                    console.error('Error fetching markets:', error);
+                }
+
+                try {
+                    const pairQueryParams = new URLSearchParams();
+                    if (selectedProviderIds.length > 0) {
+                        selectedProviderIds.forEach(id => pairQueryParams.append('selectedProviderIds', id));
+                        $("#noPairsSelected").html(`<span class="warning-chip"><span>All the Pairs related to the selected providers have been selected.</span></span>`);
+                    }
+                    else{
+                         $("#noPairsSelected").html('<p class="text-gray-500" id="noPairsSelected">No pairs selected.</p>');
+                    }
+                    if (selectedMarketIds.length > 0) {
+                        selectedMarketIds.forEach(id => pairQueryParams.append('selectedMarketIds', id));
+                        $("#noPairsSelected").html(`<span class="warning-chip"><span>All the Pairs related to the selected Market have been selected.</span></span>`);
+                    }
+                    if (selectedPairIds.length > 0) {
+                        selectedPairIds.forEach(id => pairQueryParams.append('selectedIds', id));
+                    }
+                    pairQueryParams.append('isListFilter', 'false');
+
+                    const pairResponse = await fetch(`/ConsumerConfiguration/GetPairs?${pairQueryParams.toString()}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!pairResponse.ok) throw new Error(`Failed to fetch pairs: ${pairResponse.status}`);
+                    const pairs = await pairResponse.json();
+                    await pairDropdown.updateItems(pairs.map(item => ({ value: item.value, text: item.text })));
+                } catch (error) {
+                    console.error('Error fetching pairs:', error);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                providerDropdown = new DropdownComponent({
+                    items: @Html.Raw(Json.Serialize(Model.Response.ProviderOptions?.Select(o => new { value = o.Value, text = o.Text }))),
+                    selectedItems: @Html.Raw(Json.Serialize(Model.Response.ProviderIds?.Select(id => id.ToString()) ?? new List<string>())),
+                    toggleBtnId: 'toggleProviderDropdownBtn',
+                    listId: 'providerDropdownList',
+                    arrowId: 'providerDropdownArrow',
+                    containerId: 'providerDropdownSection',
+                    displayId: 'selectedProvidersDisplay',
+                    noTextId: 'noProvidersSelected',
+                    loadingTextId: 'loadingProviderText',
+                    hiddenInputId: 'selectedProviderIdsHidden',
+                    selectAllId: 'selectAllProviderCheckbox',
+                    label: 'provider',
+                    onSelectionChange: (selectedItems) => reloadDependentDropdowns(selectedItems, marketDropdown.config.selectedItems)
+                });
+
+                marketDropdown = new DropdownComponent({
+                    items: @Html.Raw(Json.Serialize(Model.Response.MarketOptions?.Select(o => new { value = o.Value, text = o.Text }))),
+                    selectedItems: @Html.Raw(Json.Serialize(Model.Response.MarketIds?.Select(id => id.ToString()) ?? new List<string>())),
+                    toggleBtnId: 'toggleMarketDropdownBtn',
+                    listId: 'marketDropdownList',
+                    arrowId: 'marketDropdownArrow',
+                    containerId: 'marketDropdownSection',
+                    displayId: 'selectedMarketsDisplay',
+                    noTextId: 'noMarketsSelected',
+                    loadingTextId: 'loadingMarketText',
+                    hiddenInputId: 'selectedMarketIdsHidden',
+                    selectAllId: 'selectAllMarketCheckbox',
+                    label: 'market',
+                    onSelectionChange: (selectedItems) => reloadDependentDropdowns(providerDropdown.config.selectedItems, selectedItems)
+                });
+
+                pairDropdown = new DropdownComponent({
+                    items: @Html.Raw(Json.Serialize(Model.Response.PairOptions?.Select(o => new { value = o.Value, text = o.Text }))),
+                    selectedItems: @Html.Raw(Json.Serialize(Model.Response.PairIds?.Select(id => id.ToString()) ?? new List<string>())),
+                    toggleBtnId: 'togglePairDropdownBtn',
+                    listId: 'pairDropdownList',
+                    arrowId: 'pairDropdownArrow',
+                    containerId: 'pairDropdownSection',
+                    displayId: 'selectedPairsDisplay',
+                    noTextId: 'noPairsSelected',
+                    loadingTextId: 'loadingPairText',
+                    hiddenInputId: 'selectedPairIdsHidden',
+                    selectAllId: 'selectAllPairCheckbox',
+                    label: 'pair'
+                });
+
+                scopeDropdown = new DropdownComponent({
+                    items: @Html.Raw(Json.Serialize(Model.Response.Scopes?.Select(o => new { value = o.Value, text = o.Text }))),
+                    selectedItems: @Html.Raw(Json.Serialize(Model.Response.SelectedScope != null ? new List<string> { Model.Response.SelectedScope.ToString() } : new List<string>())),
+                    toggleBtnId: 'toggleScopeDropdownBtn',
+                    listId: 'scopeDropdownList',
+                    arrowId: 'scopeDropdownArrow',
+                    containerId: 'scopeDropdownSection',
+                    displayId: 'selectedScopesDisplay',
+                    noTextId: 'noScopesSelected',
+                    loadingTextId: 'loadingScopeText',
+                    hiddenInputId: 'selectedScopesHidden',
+                    selectAllId: 'selectAllScopeCheckbox',
+                    label: 'scope',
+                    onSelectionChange: (selectedItems) => {
+                        //console.log("Scope selection changed:", selectedItems);
+                    }
+                });
+
+                const dropdowns = [providerDropdown, marketDropdown, pairDropdown, scopeDropdown];
+                document.addEventListener('mousedown', (e) => handleClickOutside(e, dropdowns));
+
+                // Initial load of dependent dropdowns
+                reloadDependentDropdowns(providerDropdown.config.selectedItems, marketDropdown.config.selectedItems);
+
+
+                // Form submission
+                document.getElementById('createBusinessForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.set("Response.IsActive", $("#isActive").prop('checked'));
+                    for (let [key, value] of formData.entries()) {
+                        logDebug(`${key}: ${value}`);
+                    }
+
+                    formData.delete("Response.ProviderIds");
+                    formData.delete("Response.MarketIds");
+                    formData.delete("Response.PairIds");
+
+                    // Providers
+                    const providerIds = providerDropdown.config.selectedItems; // Get the array directly from the component instance
+                    providerIds.forEach(id => {
+                        formData.append('Response.ProviderIds', id);
+                    });
+
+                    // Markets
+                    const marketIds = marketDropdown.config.selectedItems; // Get the array directly from the component instance
+                    marketIds.forEach(id => {
+                        formData.append('Response.MarketIds', id);
+                    });
+
+                    // Pairs
+                    const pairIds = pairDropdown.config.selectedItems; // Get the array directly from the component instance
+                    pairIds.forEach(id => {
+                        formData.append('Response.PairIds', id);
+                    });
+
+                    fetch('@Url.Action("Edit", "Consumer")', {
+                        method: 'POST',
+                        body: formData
+                    }).then(response => {
+                            if (!response.ok) {
+                                return response.text().then(text => {
+                                    throw new Error(`Failed to save: ${response.status} - ${text}`);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.isSuccess) {
+                                showSuccessMessage(data.data.message);
+                                window.location.href = '@Url.Action("List", "Consumer")';
+                            } else {
+                                showErrorMessage(data.errors);
+                            }
+                        })
+                        .catch(error => {
+                            showErrorMessage("Error: " + error.message);
+                        });
+                });
+            });
+    </script>
+
+</body>
+
+
+
+
+

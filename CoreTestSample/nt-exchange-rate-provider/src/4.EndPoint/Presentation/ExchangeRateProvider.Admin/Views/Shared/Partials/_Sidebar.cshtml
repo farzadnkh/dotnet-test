@@ -1,0 +1,233 @@
+﻿<!-- Sidebar HTML -->
+<div class="sidebar">
+	<nav class="mt-2">
+		<ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+			<li class="nav-item">
+				<a asp-controller="Home" asp-action="Index" class="nav-link active">
+					<i class="nav-icon fas fa-tachometer-alt"></i>
+					<p>Dashboard</p>
+				</a>
+			</li>
+
+			<!-- Currency -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+					<i class="fas fa-coins nav-icon"></i>
+					<p>Currency <i class="right fas fa-angle-down"></i></p>
+				</a>
+				<ul class="nav nav-treeview" style="display: none;">
+					<li class="nav-item">
+						<a asp-controller="Currency" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Currency Management</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- RateProviders -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+					<i class="nav-icon fas fa-check-circle"></i>
+					<p>RateProviders <i class="right fas fa-angle-down"></i></p>
+				</a>
+				<ul class="nav nav-treeview" style="display: none;">
+					<li class="nav-item">
+						<a asp-controller="Provider" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Providers</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a asp-controller="ProviderApiAccount" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Provider Accounts</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Markets -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+					<i class="nav-icon fas fa-chart-bar"></i>
+					<p>Markets <i class="right fas fa-angle-down"></i></p>
+				</a>
+				<ul class="nav nav-treeview" style="display: none;">
+					<li class="nav-item">
+						<a asp-controller="Market" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Markets</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a asp-controller="MarketTradingPair" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Trading Pair</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a asp-controller="ManualRating" asp-action="Index" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Manual Rate</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Users -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+					<i class="fas fa-user nav-icon"></i>
+					<p>Users <i class="right fas fa-angle-down"></i></p>
+				</a>
+				<ul class="nav nav-treeview" style="display: none;">
+					<li class="nav-item">
+						<a asp-controller="User" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>User Management</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- Consumers -->
+			<li class="nav-item has-treeview">
+				<a href="#" class="nav-link">
+					<i class="nav-icon fas fa-user"></i>
+					<p>Consumers <i class="right fas fa-angle-down"></i></p>
+				</a>
+				<ul class="nav nav-treeview" style="display: none;">
+					<li class="nav-item">
+						<a asp-controller="Consumer" asp-action="List" class="nav-link">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Consumer Management</p>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="nav-item">
+				<a asp-controller="Setting" asp-action="Index" class="nav-link">
+					<i class="nav-icon fas fa-tachometer-alt"></i>
+					<p>Setting</p>
+				</a>
+			</li>
+		</ul>
+	</nav>
+</div>
+
+<!-- JS Dependencies (correct order) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- Sidebar Treeview Toggle Script -->
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const navItemsWithSubmenu = document.querySelectorAll('.nav-item.has-treeview > a');
+		const nav = document.querySelector('.nav');
+		const accordionEnabled = nav ? nav.dataset.accordion !== 'false' : true;
+
+		$('.nav-item').each(function () {
+			let currentUri = window.location.pathname.toLowerCase();
+			let hrefs = $(this).find('.nav-link').attr('href')?.toLowerCase();
+			if(currentUri != "/home/index" && hrefs != undefined){
+				if(hrefs.split('/')[1] == currentUri.split('/')[1])
+					 $(this).find('.nav-link').addClass("active");
+				else
+					$(this).find('.nav-link').removeClass("active");
+				}
+		});
+
+		(function restoreActiveTreeview() {
+			const activeLink = document.querySelector('.nav-link.active');
+			if (activeLink) {
+				const treeviewItem = activeLink.closest('.nav-item.has-treeview');
+				if (treeviewItem) {
+					const subMenu = treeviewItem.querySelector('.nav-treeview');
+					const icon = treeviewItem.querySelector('.right.fas');
+
+					if (subMenu) {
+						subMenu.style.display = 'block'; // Keep submenu open
+					}
+					if (icon) {
+						icon.classList.remove('fa-angle-down');
+						icon.classList.add('fa-angle-up');
+					}
+				}
+			}
+		})();
+
+		navItemsWithSubmenu.forEach(function(anchor) {
+			anchor.addEventListener('click', function(event) {
+				event.preventDefault();
+
+				const parent = this.closest('.nav-item');
+				const subMenu = parent.querySelector('.nav-treeview');
+				const icon = this.querySelector('.right.fas');
+
+				if (!subMenu) {
+					return;
+				}
+
+				if (accordionEnabled) {
+					const allParentItems = document.querySelectorAll('.nav-item.has-treeview');
+					allParentItems.forEach(function(otherParent) {
+						if (otherParent !== parent) {
+							const otherSubMenu = otherParent.querySelector('.nav-treeview');
+							const otherIcon = otherParent.querySelector('.right.fas');
+							if (otherSubMenu && otherSubMenu.style.display === 'block') {
+								slideUp(otherSubMenu, 'fast');
+								if (otherIcon) {
+									otherIcon.classList.remove('fa-angle-up');
+									otherIcon.classList.add('fa-angle-down');
+								}
+							}
+						}
+					});
+				}
+
+				if (subMenu.style.display === 'block') {
+					slideUp(subMenu, 'fast');
+				} else {
+					slideDown(subMenu, 'fast');
+				}
+
+				if (icon) {
+					icon.classList.toggle('fa-angle-down');
+					icon.classList.toggle('fa-angle-up');
+				}
+			});
+		});
+
+		function slideUp(element, speed) {
+			element.style.overflow = 'hidden';
+			element.style.transition = `height ${speed === 'fast' ? '0.2s' : '0.4s'} ease-in-out`;
+			element.style.height = 0;
+			setTimeout(() => {
+				element.style.display = 'none';
+				element.style.removeProperty('height');
+				element.style.removeProperty('overflow');
+				element.style.removeProperty('transition');
+			}, speed === 'fast' ? 200 : 400);
+		}
+
+		function slideDown(element, speed) {
+			element.style.display = 'block';
+			const height = element.offsetHeight;
+			element.style.overflow = 'hidden';
+			element.style.height = 0;
+			element.style.transition = `height ${speed === 'fast' ? '0.2s' : '0.4s'} ease-in-out`;
+			requestAnimationFrame(() => {
+				element.style.height = height + 'px';
+			});
+			setTimeout(() => {
+				element.style.removeProperty('height');
+				element.style.removeProperty('overflow');
+				element.style.removeProperty('transition');
+			}, speed === 'fast' ? 200 : 400);
+		}
+	});
+</script>

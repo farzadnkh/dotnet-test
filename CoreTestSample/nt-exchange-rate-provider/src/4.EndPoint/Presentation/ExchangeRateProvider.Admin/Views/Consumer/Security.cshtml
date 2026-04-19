@@ -1,0 +1,172 @@
+﻿@model ResponseWrapper<CreateConsumerModel>
+
+@{
+}
+
+<div class="container-fluid mt-4">
+    <div class="card">
+        <div class="card shadow-sm mb-4" style="margin: 15px">
+            <div class="card-body">
+                <div class="security-input-group">
+                    <label for="clientId">Client ID</label>
+                    <div class="security-input-wrapper">
+                        <input asp-for="Response.ClientId" type="text" id="clientId" disabled>
+                        <i class="fas fa-copy copy-icon" onclick="copyToClipboard('clientId')"></i>
+                    </div>
+                </div>
+                @Html.Hidden("isEditMode", Model.Response.IsEditMode)
+                @Html.Hidden("ConsumerId", Model.Response.ConsumerId)
+
+                <div class="security-input-group">
+                    <label for="clientSecret">Client Secret</label>
+                    <div class="secret-section">
+                        <div class="secret-input security-input-wrapper">
+                            <input type="text" id="clientSecret" value="@(Model.Response.IsEditMode ? "********************************************" : Model.Response.ClientSecret)" disabled>
+                            <i class="fas fa-copy copy-icon" onclick="copyToClipboard('clientSecret')"></i>
+                        </div>
+                        @if (Model.Response.IsEditMode)
+                        {
+                            <button class="btn-generate" onclick="generateClientSecret()">Re-Generate</button>
+                        }
+                    </div>
+                </div>
+
+                <div class="warning-banner" id="saveWarning">
+                    <i class="fas fa-exclamation-circle"></i> After saving changes and leaving this page, the secret will no longer be available. Please copy and store it securely.
+                </div>
+
+                <div class="notification" id="notification">
+                    Copied to clipboard
+                </div>
+
+                <div class="mt-4">
+                    <a href="@Url.Action("List", "Consumer")" class="btn btn-danger">Cancel</a>
+                    <button type="button" class="btn btn-success" onclick="handleSave()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+   
+<script src="~/js/consumerConfigs.js"></script>
+<script>
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 40px;
+        color: #333;
+        background-color: #f9f9f9;
+    }
+
+    .security-container{
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .security-input-group {
+        margin-bottom: 25px;
+    }
+
+        .security-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+    .security-input-wrapper {
+        position: relative;
+        display: flex;
+    }
+
+        .security-input-wrapper input {
+            flex: 1;
+            padding: 12px 40px 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: #fafafa;
+        }
+
+    .copy-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        cursor: pointer;
+        padding: 5px;
+        transition: all 0.2s;
+    }
+
+        .copy-icon:hover {
+            color: #2c3e50;
+        }
+
+    .btn-generate {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .btn-generate:hover {
+            background-color: #2980b9;
+        }
+
+    .notification {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0,0,0,0.8);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+    }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+    .warning-banner {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #f39c12;
+        color: #7f8c8d;
+        font-size: 14px;
+        display: none;
+    }
+
+    .secret-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .secret-input {
+        flex: 1;
+    }
+</style>

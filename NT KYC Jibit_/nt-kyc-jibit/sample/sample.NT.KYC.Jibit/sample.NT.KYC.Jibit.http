@@ -1,0 +1,6 @@
+@sample.NT.KYC.Jibit_HostAddress = http://localhost:5231
+
+GET {{sample.NT.KYC.Jibit_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

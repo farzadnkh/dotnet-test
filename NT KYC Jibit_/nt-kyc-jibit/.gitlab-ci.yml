@@ -1,0 +1,35 @@
+stages:
+  - sonar
+  - build
+  - dispatch
+
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $VERSION_SUFFIX != null && $VERSION_SUFFIX != ""'
+      when: always
+    - when: never
+
+
+variables:
+  MAIN_CPS: $CI_PIPELINE_SOURCE
+  SONAR_PROJECT_KEY: "next-top-tech_core_backend_packages_nt-kyc-jibit_b0ad0db3-775d-4c92-9cbb-36b64339dec1"
+
+.job_template: &job
+  stage: dispatch
+  when: manual
+  allow_failure: false
+  trigger:
+    include:
+      - project: "next-top-tech/core/backend/ci-cd"
+        ref: develop
+        file: dotnet-template-nuget-sonar.yml
+    strategy: depend
+    forward:
+      pipeline_variables: true
+      yaml_variables: true
+
+pack-NT.KYC.Jibit:
+  <<: *job
+  variables:
+    PROJECT_PATH: src/NT.KYC.Jibit/NT.KYC.Jibit.csproj

@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3686520F-82E0-4D8A-80F4-74D87E444EC7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NT.KYC.Jibit", "src\NT.KYC.Jibit\NT.KYC.Jibit.csproj", "{515848AD-3D5A-4A66-9980-4DA36954018E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{6D72ACA9-DBF4-4FC9-9980-24E1F430078B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A221657A-DC1C-4DE8-A729-9B2DD5F125E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.NT.KYC.Jibit", "test\Test.NT.KYC.Jibit\Test.NT.KYC.Jibit.csproj", "{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5B6CAD02-919C-4CB6-89BE-C4F890D1694F}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".git", ".git", "{C2D6F6FD-7454-4975-9B4E-51BAE3C3A64E}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sample.NT.KYC.Jibit", "sample\sample.NT.KYC.Jibit\sample.NT.KYC.Jibit.csproj", "{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{515848AD-3D5A-4A66-9980-4DA36954018E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{515848AD-3D5A-4A66-9980-4DA36954018E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{515848AD-3D5A-4A66-9980-4DA36954018E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{515848AD-3D5A-4A66-9980-4DA36954018E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{515848AD-3D5A-4A66-9980-4DA36954018E} = {3686520F-82E0-4D8A-80F4-74D87E444EC7}
+		{FD7650C7-B6DC-4A39-A8F2-338BFDF93D7F} = {A221657A-DC1C-4DE8-A729-9B2DD5F125E2}
+		{9CA314F7-6211-4E64-A20C-1F9A5B07F5CF} = {6D72ACA9-DBF4-4FC9-9980-24E1F430078B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {289D38DC-5C51-4430-9EAB-DFC4F399E0D9}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,135 @@
+﻿@model List<string>
+@{
+    var selectedMarketsJson = Json.Serialize(Model ?? new List<string>());
+}
+
+<div class="col" id="Provider_Bussines_Section">
+    <div class="col-md-4">
+        <label class="form-label">SupportedProviders</label>
+        <div id="marketDropdownSection" class="relative">
+            <button type="button" id="toggleMarketDropdownBtn"
+                    class="w-full text-left bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <span>Select Markets</span>
+                <svg class="w-5 h-5 transition-transform duration-200" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg" id="marketDropdownArrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div id="marketDropdownList"
+                 class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden hide-scrollbar">
+                <p class="p-4 text-gray-500" id="loadingMarketText">Loading markets...</p>
+            </div>
+        </div>
+        <div id="selectedMarketsDisplay"
+             class="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg max-h-24 overflow-y-auto hide-scrollbar mt-2" style="margin-bottom: 8px;">
+            <p class="text-gray-500" id="noMarketsSelected">No markets selected.</p>
+        </div>
+        <input type="hidden" id="selectedMarketIdsHidden" name="Response.SelectedMarkets"
+               data-initial=@selectedMarketsJson />
+    </div>
+</div>
+
+
+<script type="module">
+    import { DropdownComponent } from '/js/dropdownComponent.js';
+
+    const ProviderBussinesSection = document.getElementById('Provider_Bussines_Section');
+    const providerTypeDropdown = document.getElementById('providerTypeDropdown');
+
+    let marketDropdownInstance = null;
+
+    const fetchProviderMarkets = async (providerType) => {
+        const loadingText = document.querySelector('#loadingMarketText');
+        if (loadingText) loadingText.classList.remove('hidden');
+
+        try {
+            const response = await fetch(`/Provider/GetProviderMarkets?providerType=${encodeURIComponent(providerType)}`);
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            return data.map(m => ({ value: m, text: m }));
+        } catch (error) {
+            console.error('Error fetching provider markets:', error);
+            return [];
+        } finally {
+            if (loadingText) loadingText.classList.add('hidden');
+        }
+    };
+
+    const initializeMarketDropdown = async (providerType) => {
+        const isCryptoCompare = providerType === '3';
+        if (!ProviderBussinesSection) return;
+
+        ProviderBussinesSection.style.display = isCryptoCompare ? 'flex' : 'none';
+
+        if (isCryptoCompare) {
+            const markets = await fetchProviderMarkets(providerType);
+            const initialSelected = @Html.Raw(Json.Serialize(Model ?? new List<string>()));
+
+            if (!marketDropdownInstance) {
+                marketDropdownInstance = new DropdownComponent({
+                    items: markets,
+                    selectedItems: initialSelected,
+                    toggleBtnId: 'toggleMarketDropdownBtn',
+                    listId: 'marketDropdownList',
+                    arrowId: 'marketDropdownArrow',
+                    containerId: 'marketDropdownSection',
+                    displayId: 'selectedMarketsDisplay',
+                    noTextId: 'noMarketsSelected',
+                    loadingTextId: 'loadingMarketText',
+                    hiddenInputId: 'selectedMarketIdsHidden',
+                    selectAllId: 'selectAllMarketCheckbox',
+                    label: 'market'
+                });
+            } else {
+                marketDropdownInstance.config.items = markets;
+                marketDropdownInstance.config.selectedItems = initialSelected;
+                marketDropdownInstance.renderDropdownItems();
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (providerTypeDropdown) {
+            providerTypeDropdown.addEventListener('change', () => {
+                initializeMarketDropdown(providerTypeDropdown.value);
+            });
+            initializeMarketDropdown(providerTypeDropdown.value);
+        }
+
+        document.addEventListener('mousedown', (event) => {
+            const list = document.querySelector('#marketDropdownList');
+            const container = document.querySelector('#marketDropdownSection');
+            const arrow = document.querySelector('#marketDropdownArrow');
+
+            if (list && container && !container.contains(event.target)) {
+                list.classList.add('hidden');
+                arrow.classList.remove('rotate-180');
+            }
+        });
+    });
+</script>
+
+<style>
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+    .selected-tag-close {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ef4444;
+        transition: color 0.2s;
+    }
+
+        .selected-tag-close:hover {
+            color: #b91c1c;
+        }
+</style>

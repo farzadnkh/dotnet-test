@@ -1,0 +1,113 @@
+﻿@model IEnumerable<SelectListItem>
+
+@{
+    var AllProviders = Json.Serialize(Model ?? new List<SelectListItem>());
+    var selectedProvidersJson = Json.Serialize(Model.Where(item => item.Selected).ToList() ?? new List<SelectListItem>());
+}
+
+<div class="col" id="ExchangeRateProvider_Section">
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Exchange Rate Providers</label>
+        <div id="providerDropdownSection" class="relative">
+            <button type="button" id="toggleProviderDropdownBtn"
+                    class="w-full text-left bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-gray-700 flex justify-between items-center hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <span>Select Providers</span>
+                <svg class="w-5 h-5 transition-transform duration-200" fill="none"
+                     stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg" id="providerDropdownArrow">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div id="providerDropdownList"
+                 class="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden hide-scrollbar">
+                <p class="p-4 text-gray-500" id="loadingProviderText">Loading providers...</p>
+            </div>
+        </div>
+
+        <div id="selectedProvidersDisplay"
+             class="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg max-h-24 overflow-y-auto hide-scrollbar mt-2" style="margin-bottom: 8px;">
+            <p class="text-gray-500" id="noProvidersSelected">No providers selected.</p>
+        </div>
+
+        <input type="hidden" id="selectedProviderIdsHidden" name="Response.ExchangeRateProviderIds"
+               data-initial=@selectedProvidersJson />
+    </div>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module">
+    import { DropdownComponent } from '/js/dropdownComponent.js';
+    const options = @Html.Raw(Json.Serialize(Model ?? new List<SelectListItem>()));
+
+    const fetchExchangeRateProviders = async () => {
+        const loadingText = document.querySelector('#loadingProviderText');
+        if (loadingText) loadingText.classList.remove('hidden');
+
+        try {
+                const result = options.map(p => ({
+                value: p.value,
+                text: p.text  
+            }));
+            return result;
+        } catch (error) {
+            console.error('Error fetching exchange rate providers:', error);
+            return [];
+        } finally {
+            if (loadingText) loadingText.classList.add('hidden');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        var selected = @Html.Raw(Json.Serialize(Model.Where(item => item.Selected).Select(item => item.Text) ?? new List<string>()));
+        const providers = await fetchExchangeRateProviders();
+        new DropdownComponent({
+            items: providers,
+            selectedItems: selected,
+            toggleBtnId: 'toggleProviderDropdownBtn',
+            listId: 'providerDropdownList',
+            arrowId: 'providerDropdownArrow',
+            containerId: 'providerDropdownSection',
+            displayId: 'selectedProvidersDisplay',
+            noTextId: 'noProvidersSelected',
+            loadingTextId: 'loadingProviderText',
+            hiddenInputId: 'selectedProviderIdsHidden',
+            selectAllId: 'selectAllProviderCheckbox',
+            label: 'provider'
+        });
+
+        document.addEventListener('mousedown', (event) => {
+            const list = document.querySelector('#providerDropdownList');
+            const container = document.querySelector('#providerDropdownSection');
+            const arrow = document.querySelector('#providerDropdownArrow');
+
+            if (list && container && !container.contains(event.target)) {
+                list.classList.add('hidden');
+                arrow.classList.remove('rotate-180');
+            }
+        });
+    });
+</script>
+
+<style>
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+    .selected-tag-close {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ef4444;
+        transition: color 0.2s;
+    }
+
+        .selected-tag-close:hover {
+            color: #b91c1c;
+        }
+</style>

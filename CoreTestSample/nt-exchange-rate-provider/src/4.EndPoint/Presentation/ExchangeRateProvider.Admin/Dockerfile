@@ -1,0 +1,30 @@
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS sdk
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /exchangeRate
+
+COPY ["nuget.config", "."]
+COPY ["src/4.EndPoint/Presentation/ExchangeRateProvider.Admin/ExchangeRateProvider.Admin.csproj", "src/4.EndPoint/Presentation/ExchangeRateProvider.Admin/"]
+COPY ["src/1.Domain/ExchangeRateProvider.Contract/ExchangeRateProvider.Contract.csproj", "src/1.Domain/ExchangeRateProvider.Contract/"]
+COPY ["src/1.Domain/ExchangeRateProvider.Domain/ExchangeRateProvider.Domain.csproj", "src/1.Domain/ExchangeRateProvider.Domain/"]
+COPY ["src/2.Application/ExchangeRateProvider.Application/ExchangeRateProvider.Application.csproj", "src/2.Application/ExchangeRateProvider.Application/"]
+COPY ["src/3.Infrastructure/ExchangeRateProvider.Infrastructure.Sql/ExchangeRateProvider.Infrastructure.Sql.csproj", "src/3.Infrastructure/ExchangeRateProvider.Infrastructure.Sql/"]
+COPY ["src/Adapters/CryptoCompare/ExchangeRateProvider.Adapter.CryptoCompare.csproj", "src/Adapters/CryptoCompare/"]
+COPY ["src/Adapters/ExchangeRateProvider.Adapter.Base/ExchangeRateProvider.Adapter.Base.csproj", "src/Adapters/ExchangeRateProvider.Adapter.Base/"]
+COPY ["src/Adapters/ExchangeRateProvider.Adapter.Xe/ExchangeRateProvider.Adapter.Xe.csproj", "src/Adapters/ExchangeRateProvider.Adapter.Xe/"]
+
+RUN dotnet restore "src/4.EndPoint/Presentation/ExchangeRateProvider.Admin/./ExchangeRateProvider.Admin.csproj" --configfile nuget.config
+COPY . .
+
+RUN dotnet publish "src/4.EndPoint/Presentation/ExchangeRateProvider.Admin/./ExchangeRateProvider.Admin.csproj" --no-restore -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+ARG ENVIRONMENT=$ENVIRONMENT
+RUN echo "Current env: $ENVIRONMENT"
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+ENV ASPNETCORE_ENVIRONMENT=$ENVIRONMENT
+COPY --from=sdk /app/publish .
+ENTRYPOINT ["dotnet", "ExchangeRateProvider.Admin.dll"]

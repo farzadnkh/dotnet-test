@@ -1,0 +1,9 @@
+﻿global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Logging;
+global using Newtonsoft.Json;
+global using NT.DDD.Application.Exceptions;
+global using NT.DDD.Base.Paginations.Enums;
+global using NT.DDD.Base.Paginations.Requests;
+global using NT.DDD.Base.Paginations.Responses;
+global using System.Net;

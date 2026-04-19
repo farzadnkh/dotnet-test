@@ -1,0 +1,95 @@
+﻿@using ExchangeRateProvider.Admin.Models.Markets
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ResponseWrapper<CreateMarketModel>
+@{
+    ViewData["Title"] = "Markets";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <form asp-controller="Market" asp-action="Edit" method="post">
+        <div class="card">
+            <div class="card" style="margin: 15px">
+                <div class="card-header bg-light border-bottom">
+                    <h5 class="mb-0">Edit Market</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="col align-items-center">
+                        <div class="col-md-4">
+                            <label for="MarketCurrencyId">Market Currency:</label>
+                            @Html.DropDownList("Response.MarketCurrencyId", Model.Response.MarketCurrencyIdsOptions, new { @class = "form-control", @placeholder = "Select Type" })
+                        </div>
+
+                        @await Html.PartialAsync("~/Views/Shared/Partials/_ExchangeRateProviderDropdown.cshtml", Model.Response.ExchangeRateProviderIdsOptions)
+
+                        <div class="col-md-4">
+                            <label for="MarketCalculationTerms">Calculation Terms:</label>
+                            @Html.DropDownList("Response.MarketCalculationTerms", Model.Response.CalculationOptions, new { @class = "form-control", @placeholder = "Select Type" })
+                        </div>
+                        <div class="col-md-4">
+                            <label for="MarketCalculationTerms">RatingMethod:</label>
+                            @Html.DropDownList("Response.RatingMethod", Model.Response.RatingMethodOptions, new { @class = "form-control", @placeholder = "Select Type" })
+                        </div>
+                        <div class="col-md-4 form-check mt-3">
+                            <input asp-for="Response.IsDefault" class="form-check-input" type="checkbox" />
+                            <label asp-for="Response.IsDefault" class="form-check-label">Is Default</label>
+                        </div>
+                        <div class="col-md-4 form-check mt-3">
+                            <input asp-for="Response.Published" class="form-check-input" type="checkbox" />
+                            <label asp-for="Response.Published" class="form-check-label">Published</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4" id="spreadOptionsCard" style="margin: 15px;">
+                <div class="card-header bg-light border-bottom">
+                    <h5 class="mb-0 py-2">Spread Options</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input asp-for="Response.SpreadOptions.SpreadEnabled" class="form-check-input" type="checkbox" id="spreadEnabledCheck" />
+                                <label asp-for="Response.SpreadOptions.SpreadEnabled" class="form-check-label" for="spreadEnabledCheck">Spread Enabled</label>
+                            </div>
+                            <span asp-validation-for="Response.SpreadOptions.SpreadEnabled" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-6">
+                            <label class="form-label" for="lowerLimitInput">Lower Limit</label>
+                            <div class="input-group">
+                                <input asp-for="Response.SpreadOptions.LowerLimitPercentage" class="form-control" placeholder="Lower" id="lowerLimitInput" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <span asp-validation-for="Response.SpreadOptions.LowerLimitPercentage" class="text-danger" id="lowerLimitError"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="upperLimitInput">Upper Limit</label>
+                            <div class="input-group">
+                                <input asp-for="Response.SpreadOptions.UpperLimitPercentage" class="form-control" placeholder="Upper" id="upperLimitInput" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <span asp-validation-for="Response.SpreadOptions.UpperLimitPercentage" class="text-danger" id="upperLimitError"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-btn mt-4">
+                <a type="submit" href="@Url.Action("List", "Market")" value="Cancel" class="btn btn-danger">Cancel</a>
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="~/js/sweetAlertConfig.js"></script>
+<script src="~/js/SubmitForms.js"></script>
+<script src="~/js/spreadoption.js"></script>

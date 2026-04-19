@@ -1,0 +1,153 @@
+variables:
+  PROJECT_ADDRESS: next-top-tech/core/backend/internals/nt-exchange-rate-provider
+
+include:
+  - project: 'next-top-tech/core/backend/ci-cd'
+    ref: develop
+    file: dotnet-template-vault.yml
+    # file: dotnet-template.yml
+  - project: 'next-top-tech/core/backend/ci-cd'
+    ref: develop
+    file: dotnet-template-nuget.yml
+  - project: 'next-top-tech/core/backend/ci-cd'
+    ref: develop
+    file: dotnet-template-sonar.yml
+    
+stages:
+  - sonar
+  - build
+  - deploy
+
+sonar-scan-solution:
+  extends: .sonar_scan_template
+  variables:
+    BUILD_PATH: ExchangeRateProvider.sln
+    SONAR_PROJECT_KEY: next-top-tech_core_backend_internals_nt-exchange-rate-provider_3e862a60-2a18-4e76-872a-f6450270e6e8
+    
+# Development
+# Build
+build-dev-NT.ExchangeRateProvider.Cpl:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_cpl_develop
+    PROJECT_DIR: src/4.EndPoint/Presentation/ExchangeRateProvider.Admin
+    DESIRED_ENVIRONMENT: Development
+
+build-dev-NT.ExchangeRateProvider.Core:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_core_develop
+    PROJECT_DIR: src/4.EndPoint/HttpApi/ExchangeRateProvider.Api
+    DESIRED_ENVIRONMENT: Development
+
+build-dev-NT.ExchangeRateProvider.Api.Gateway:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_my_gateway_develop
+    PROJECT_DIR: src/4.EndPoint/Gateway/ExchangeRateProvider.EndPoint.ApiGateway.App
+    DESIRED_ENVIRONMENT: Development
+# Build
+
+# Deploy
+deploy-dev-NT.ExchangeRateProvider.Cpl:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Cpl-Development
+    HTTP_PORT: 22001
+    HTTPS_PORT: 22011
+    PROJECT_NAME: exchange-rate-provider_cpl_develop
+    DESIRED_ENVIRONMENT: Development
+  needs: [ build-dev-NT.ExchangeRateProvider.Cpl]
+  when: on_success
+  
+
+deploy-dev-NT.ExchangeRateProvider.Core:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Core-Development
+    HTTP_PORT: 33001
+    HTTPS_PORT: 33011
+    PROJECT_NAME: exchange-rate-provider_core_develop
+    DESIRED_ENVIRONMENT: Development
+  needs: [ build-dev-NT.ExchangeRateProvider.Core ]
+  when: on_success
+
+deploy-dev-NT.ExchangeRateProvider.Api.Gateway:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Api-Gateway-Development
+    HTTP_PORT: 44001
+    HTTPS_PORT: 44011
+    PROJECT_NAME: exchange-rate-provider_my_gateway_develop
+    DESIRED_ENVIRONMENT: Development
+  needs: [ build-dev-NT.ExchangeRateProvider.Api.Gateway ]
+  when: on_success
+# Deploy
+# Development
+
+# Test
+# Build
+build-test-NT.ExchangeRateProvider.Cpl:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_cpl_test
+    PROJECT_DIR: src/4.EndPoint/Presentation/ExchangeRateProvider.Admin
+    DESIRED_ENVIRONMENT: Test
+
+build-test-NT.ExchangeRateProvider.Core:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_core_test
+    PROJECT_DIR: src/4.EndPoint/HttpApi/ExchangeRateProvider.Api
+    DESIRED_ENVIRONMENT: Test
+
+build-test-NT.ExchangeRateProvider.Api.Gateway:
+  extends: .build-job
+  variables:
+    PROJECT_NAME: exchange-rate-provider_api_gateway_test
+    PROJECT_DIR: src/4.EndPoint/Gateway/ExchangeRateProvider.EndPoint.ApiGateway.App
+    DESIRED_ENVIRONMENT: Test
+# Build
+
+# Deploy
+deploy-test-NT.ExchangeRateProvider.Cpl:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Cpl-Test
+    HTTP_PORT: 22002
+    HTTPS_PORT: 22012
+    PROJECT_NAME: exchange-rate-provider_cpl_test
+    DESIRED_ENVIRONMENT: Test
+  needs: [ build-test-NT.ExchangeRateProvider.Cpl]
+  when: on_success
+  
+deploy-test-NT.ExchangeRateProvider.Core:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Core-Test
+    HTTP_PORT: 33002
+    HTTPS_PORT: 33012
+    PROJECT_NAME: exchange-rate-provider_core_test
+    DESIRED_ENVIRONMENT: Test
+  needs: [ build-test-NT.ExchangeRateProvider.Core ]
+  when: on_success
+
+deploy-test-NT.ExchangeRateProvider.Api.Gateway:
+  extends: .deploy-job
+  variables:
+    CONTAINER_NAME: ExchangeRateProvider-Api-Gateway-Test
+    HTTP_PORT: 44002
+    HTTPS_PORT: 44012
+    PROJECT_NAME: exchange-rate-provider_api_gateway_test
+    DESIRED_ENVIRONMENT: Test
+  needs: [ build-test-NT.ExchangeRateProvider.Api.Gateway ]
+  when: on_success
+# Deploy
+# Test
+
+# Nuget pack Progress
+pack-NT.SDK.ExchangeRateProvider:
+  extends: .pack_template
+  variables:
+    PROJECT_PATH: sdk/src/NT.ExchangeRateProvider.Sdk/NT.SDK.ExchangeRateProvider.csproj
+# Nuget pack Progress

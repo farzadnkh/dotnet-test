@@ -1,0 +1,99 @@
+﻿@using ExchangeRateProvider.Admin.Models.ProviderApiAccounts
+@model GetProviderApiAccountListModel
+@{
+    ViewData["Title"] = "Provider ApiAccounts";
+    Layout = "_Layout";
+}
+
+<h1>@ViewData["Title"] List</h1>
+
+<form asp-controller="ProviderApiAccount" asp-action="list" method="get" class="mb-4">
+    <div class="row" style="align-items: center;">
+        <div class="col-md-2">
+            <strong for="Owner">Owner:</strong>
+            @Html.TextBox("Owner", Model.Owner, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            <strong asp-for="Type" class="form-label">Provider Type:</strong>
+            @Html.DropDownList("Type", Model.ProviderTypesOptions, new { @class = "form-control", @placeholder = "Select Type" })
+        </div>
+        <div class="col-md-2">
+            <strong for="Published">Published:</strong>
+            @Html.DropDownList("Published", Model.PublishOptions, new { @class = "form-control", @placeholder = "Select One" })
+        </div>
+        <div class="col-md-2 mt-4">
+            <button type="submit" class="btn btn-success btn-sm">Search</button>
+            <a asp-controller="ProviderApiAccount" asp-action="Add" class="btn btn-info btn-sm">
+                Create
+            </a>
+        </div>
+    </div>
+</form>
+<br />
+<div class="d-flex justify-content-end mb-3">
+    <form asp-controller="ProviderApiAccount" asp-action="List" method="get" id="pageSizeForm">
+        <div class="input-group">
+            <label for="Size" class="input-group-text">Items per page:</label>
+            @Html.DropDownList("size", Model.SizeOptions, new { @class = "form-select", onchange = "this.form.submit();" })
+            <input type="hidden" name="index" value="@Model.PaginationResponse.Base.Index" />
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Provider</th>
+                <th>ProtocolType</th>
+                <th>Owner</th>
+                <th>Published</th>
+                <th>CreatedDate</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var providerapiaccount in Model.PaginationResponse.Items)
+            {
+                <tr>
+                    <td>@EnumHelper.GetEnumDisplayName(providerapiaccount.Type)</td>
+                    <td>@EnumHelper.GetEnumDisplayName(providerapiaccount.ProtocolType)</td>
+                    <td>@providerapiaccount.Owner</td>
+                    <td>@(providerapiaccount.Published ? "✅" : "❌")</td>
+                    <td>@providerapiaccount.CreatedAt</td>
+                    <td class="action">
+                        <a asp-controller="ProviderApiAccount" asp-action="Edit" asp-route-id="@providerapiaccount.Id"
+                           class="nav-link active">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Provider Api Account Pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        @{
+            var totalPages = Model.PaginationResponse.Base.Total;
+            var currentPage = Model.PaginationResponse.Base.Index;
+        }
+
+        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+            <a class="page-link" asp-route-index="@(currentPage - 1)"
+               asp-route-size="@Model.PaginationResponse.Base.Size">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-route-index="@i" asp-route-size="@Model.PaginationResponse.Base.Size">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+            <a class="page-link" asp-route-index="@(currentPage + 1)"
+               asp-route-size="@Model.PaginationResponse.Base.Size">Next</a>
+        </li>
+    </ul>
+</nav>

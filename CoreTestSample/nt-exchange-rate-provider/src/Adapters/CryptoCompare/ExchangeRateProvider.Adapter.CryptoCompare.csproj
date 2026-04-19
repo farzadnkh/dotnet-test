@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Websocket.Client" Version="5.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ExchangeRateProvider.Adapter.Base\ExchangeRateProvider.Adapter.Base.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Requests\Apis\" />
+    </ItemGroup>
+
+</Project>

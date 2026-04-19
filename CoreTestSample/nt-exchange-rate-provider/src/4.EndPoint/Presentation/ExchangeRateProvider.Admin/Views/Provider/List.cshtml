@@ -1,0 +1,120 @@
+﻿@using ExchangeRateProvider.Admin.Models.Providers
+@model GetProviderListModel
+@{
+    ViewData["Title"] = "Providers";
+    Layout = "_Layout";
+}
+
+<h1>Providers List</h1>
+
+<form asp-controller="Provider" asp-action="List" method="get" class="mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-2">
+            <strong>Name:</strong>
+            <input type="text" name="name" value="@Model.Name" class="form-control" placeholder="Provider Name" />
+        </div>
+        <div class="col-md-2">
+            <strong>Provider:</strong>
+            @Html.DropDownList("provider", Model.ProviderTypesOptions, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            <strong>Published:</strong>
+            @Html.DropDownList("published", Model.PublishOptions, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2 mt-4">
+            <button type="submit" class="btn btn-success btn-sm">Search</button>
+            <a asp-controller="Provider" asp-action="Add" class="btn btn-info btn-sm">Create</a>
+        </div>
+    </div>
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+    <form asp-controller="Provider" asp-action="List" method="get" id="pageSizeForm">
+        <div class="input-group">
+            <label for="Size" class="input-group-text">Items per page:</label>
+            @Html.DropDownList("Size", Model.SizeOptions, new { @class = "form-select", onchange = "this.form.submit();" })
+
+            <input type="hidden" name="name" value="@Model.Name" />
+            <input type="hidden" name="published" value="@Model.Published" />
+            <input type="hidden" name="provider" value="@Model.Provider" />
+            <input type="hidden" name="index" value="1" />
+        </div>
+    </form>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Provider</th>
+            <th>Published</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var provider in Model.PaginationResponse.Items)
+        {
+            <tr>
+                <td>@provider.Name</td>
+                <td>@EnumHelper.GetEnumDisplayName(provider.Type)</td>
+                <td>@(provider.Published ? "✅" : "❌")</td>
+                <td class="action">
+                    <a asp-controller="Provider" asp-action="Edit" asp-route-id="@provider.Id" class="nav-link active">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="Provider Pagination">
+            <ul class="pagination justify-content-center">
+                @{
+                    var totalPages = Model.PaginationResponse.Base.Total;
+                    var currentPage = Model.PaginationResponse.Base.Index;
+                }
+
+                <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-controller="Provider"
+                       asp-action="List"
+                       asp-route-index="@(currentPage - 1)"
+                       asp-route-size="@Model.PaginationResponse.Base.Size"
+                       asp-route-name="@Model.Name"
+                       asp-route-published="@Model.Published"
+                       asp-route-provider="@Model.Provider">Previous</a>
+                </li>
+
+                @for (var i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-controller="Provider"
+                           asp-action="List"
+                           asp-route-index="@i"
+                           asp-route-size="@Model.PaginationResponse.Base.Size"
+                           asp-route-name="@Model.Name"
+                           asp-route-published="@Model.Published"
+                           asp-route-provider="@Model.Provider">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-controller="Provider"
+                       asp-action="List"
+                       asp-route-index="@(currentPage + 1)"
+                       asp-route-size="@Model.PaginationResponse.Base.Size"
+                       asp-route-name="@Model.Name"
+                       asp-route-published="@Model.Published"
+                       asp-route-provider="@Model.Provider">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

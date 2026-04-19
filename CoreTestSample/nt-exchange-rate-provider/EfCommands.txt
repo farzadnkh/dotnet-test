@@ -1,0 +1,17 @@
+ ExchangeRateProviderDbContext:
+	Add-Migration DataBaseInitializer -Context ExchangeRateProviderDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql -OutputDir Migrations/ExchangeRateProvider
+	Update-Database -Context ExchangeRateProviderDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+    Get-Migration -Context ExchangeRateProviderDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+	Script-Migration --idempotent -Context ExchangeRateProviderDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+
+ ConfigurationDbContext:
+	Add-Migration ConfigurationInitializer -Context ConfigurationDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql -OutputDir Migrations/Configuration
+	Update-Database -Context ConfigurationDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+    Get-Migration -Context ConfigurationDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+	Script-Migration --idempotent -Context ConfigurationDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+	
+ PersistedDbContext:
+	Add-Migration PersistedGrantInitializer -Context PersistedGrantDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql -OutputDir Migrations/PersistedGrant
+	Update-Database -Context PersistedGrantDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+    Get-Migration -Context PersistedGrantDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
+	Script-Migration --idempotent -Context PersistedGrantDbContext -StartupProject ExchangeRateProvider.Api -Project ExchangeRateProvider.Infrastructure.Sql
