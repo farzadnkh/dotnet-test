@@ -1,31 +1,45 @@
-﻿# .NET QA Sandbox (Backend + Real-Time Validation)
+﻿# .NET QA Engineering Portfolio
 
-Collection of .NET-focused QA samples and backend testing artifacts related to fintech-oriented systems, including API integration and real-time data scenarios.
+![QA Focus](https://img.shields.io/badge/QA-Backend%20%26%20Real--Time-1f6feb)
+![Platform](https://img.shields.io/badge/Platform-.NET-512BD4)
+![Domain](https://img.shields.io/badge/Domain-Fintech-informational)
+![Security](https://img.shields.io/badge/Public%20Data-Sanitized-success)
 
-## Contents
+Backend-focused QA samples for fintech and real-time systems.
 
-- Exchange-rate provider related testing assets
-- KYC/client integration samples
-- Contract and integration-test style examples
+## Architecture Overview
 
-## QA Focus
+```mermaid
+flowchart LR
+  C[Client / Consumer] --> API[API Services]
+  API --> AUTH[Token/Auth Layer]
+  API --> WS[Streaming/WebSocket Layer]
+  WS --> PROV[Multi-Provider Sources]
+  API --> VAL[Validation & Business Rules]
+  VAL --> REP[Test Reports / CI Signals]
+```
 
-- Backend correctness and API validation
-- Real-time behavior checks (streaming assumptions, failover scenarios)
-- Security-aware testing around auth/token flows
-- CI suitability for release-time quality gates
+## Test Strategy
 
-## Notes
+- **Contract validation:** request/response schema and version safety
+- **Business-rule checks:** pricing and provider consistency controls
+- **Real-time checks:** reconnection, heartbeat, stale-data, failover behavior
+- **Security-negative checks:** invalid token/access patterns and exposure prevention
+- **Release-readiness:** repeatable tests for CI quality gates
 
-- This repo is intentionally sanitized for public sharing.
-- Any credential-like values are placeholders only.
+## Repository Map
 
-## Usage
+- `CoreTestSample/` - exchange-rate provider QA-related assets
+- `NT KYC Jibit_/` - KYC client testing and integration samples
 
-Each subproject under this repository has its own build/run commands and dependencies. Open the target folder and run standard .NET commands:
+## Run Basics
 
 ```bash
 dotnet restore
 dotnet build
 dotnet test
 ```
+
+## Security Note
+
+All public values are placeholders. Do not commit credentials, private feeds, or runtime secrets.
